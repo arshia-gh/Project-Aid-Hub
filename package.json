@@ -1,0 +1,23 @@
+{
+  "name": "project_aid_hub",
+  "version": "1.0.0",
+  "description": "Project Aid Hub",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arshia-gh/Project-Aid-Hub.git"
+  },
+  "author": "Arshia Gholami",
+  "contributors": [
+    {
+      "name": "Joel Cheah Ui Yi",
+      "email": "gjoelcheah@gmail.com",
+      "url": "https://github.com/joelcuy"
+    }
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arshia-gh/Project-Aid-Hub/issues"
+  },
+  "homepage": "https://github.com/arshia-gh/Project-Aid-Hub#readme"
+}

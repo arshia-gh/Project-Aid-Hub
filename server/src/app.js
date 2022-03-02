@@ -11,7 +11,7 @@ const logger = parentLogger.child({
 });
 
 const app = express();
-const sv_hostname = process.env.SV_HOSTNAME || 'localhost';
+const sv_host = process.env.SV_HOST || 'localhost';
 const sv_port = process.env.SV_PORT || 8080;
 const api_prefix = process.env.API_PREFIX || 'api';
 
@@ -21,6 +21,6 @@ app.use(api_prefix, express.urlencoded({ extended: true }));
 
 app.use();
 
-app.listen(sv_port, sv_hostname, () => {
-	logger.info(`server is listening on http://${sv_hostname}:${sv_port}`);
+app.listen(sv_port, sv_host, () => {
+	logger.info(`server is listening on http://${sv_host}:${sv_port}`);
 });

@@ -3,7 +3,7 @@ import express from 'express';
 import pino from 'express-pino-logger';
 
 import sequelize from './sequelize.js';
-import path from 'path';
+sequelize.sync({ force: true }); // in production this must be set to false
 
 import { getLoggerInstance } from './utils/logger.js';
 const logger = getLoggerInstance(import.meta.url);

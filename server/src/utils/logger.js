@@ -1,4 +1,5 @@
 import pino from 'pino';
+import path from 'path';
 
 const transport = pino.transport({
 	target: 'pino-pretty',
@@ -11,5 +12,12 @@ const transport = pino.transport({
 });
 
 const logger = pino(transport);
+
+export const getLoggerInstance = (identifier, convertURL = true) => {
+	if (convertURL) {
+		identifier = path.basename(new URL(identifier).pathname);
+	}
+	return logger.child({ name: identifier });
+};
 
 export default logger;

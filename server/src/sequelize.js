@@ -1,7 +1,7 @@
 import { Sequelize } from '@sequelize/core';
-import parentLogger from './utils/logger.js';
+import { getLoggerInstance } from './utils/logger.js';
 
-const logger = parentLogger.child({ name: 'database' });
+const logger = getLoggerInstance('database', false);
 
 const config = {
 	username: process.env.DB_USERNAME,

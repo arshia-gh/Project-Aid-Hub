@@ -2,13 +2,11 @@ import dotenv from 'dotenv/config';
 import express from 'express';
 import pino from 'express-pino-logger';
 
-import parentLogger from './utils/logger.js';
 import sequelize from './sequelize.js';
 import path from 'path';
 
-const logger = parentLogger.child({
-	name: path.basename(new URL(import.meta.url).pathname),
-});
+import { getLoggerInstance } from './utils/logger.js';
+const logger = getLoggerInstance(import.meta.url);
 
 const app = express();
 const sv_host = process.env.SV_HOST || 'localhost';

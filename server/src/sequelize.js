@@ -11,6 +11,10 @@ const config = {
 	port: process.env.DB_PORT,
 	dialect: 'mysql',
 	logging: (msg) => logger.info(msg),
+
+	define: {
+		timestamps: false,
+	},
 };
 
 const sequelize = new Sequelize(config);

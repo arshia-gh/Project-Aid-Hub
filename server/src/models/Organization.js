@@ -36,7 +36,7 @@ Organization.init(
 );
 
 Organization.hasMany(User, {
-	as: 'representative',
+	as: 'representatives',
 	foreignKey: 'orgId',
 	scope: {
 		userType: 'ORG_REPRESENTATIVE',
@@ -44,7 +44,7 @@ Organization.hasMany(User, {
 });
 
 Organization.hasMany(User, {
-	as: 'applicant',
+	as: 'applicants',
 	foreignKey: 'orgId',
 	scope: {
 		userType: 'APPLICANT',

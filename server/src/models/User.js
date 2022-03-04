@@ -1,4 +1,4 @@
-import { DataTypes, Model } from '@sequelize/core';
+import { DataTypes, Model, QueryTypes } from '@sequelize/core';
 import sequelize from '../sequelize.js';
 
 class User extends Model {}
@@ -62,5 +62,19 @@ User.init(
 	},
 	{ sequelize }
 );
+
+export async function getNextUserId(transaction) {
+	return (
+		await sequelize.query(
+			`
+	SELECT AUTO_INCREMENT a
+	FROM information_schema.tables
+	WHERE table_name = 'users'
+	and table_schema = database();
+	`,
+			{ transaction, type: QueryTypes.SELECT }
+		)
+	)[0]['a'];
+}
 
 export default User;

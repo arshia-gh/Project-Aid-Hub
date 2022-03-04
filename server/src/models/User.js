@@ -1,17 +1,23 @@
-import { DataTypes, Model } from '@sequelize/core';
+import { DataTypes, Model, QueryTypes } from '@sequelize/core';
 import sequelize from '../sequelize.js';
 
 class User extends Model {}
 
 User.init(
 	{
-		username: {
-			type: DataTypes.STRING(20),
+		id: {
+			type: DataTypes.INTEGER,
+			autoIncrement: true,
 			primaryKey: true,
 		},
 
+		username: {
+			type: DataTypes.STRING(14),
+			unique: true,
+		},
+
 		password: {
-			type: DataTypes.CHAR(20),
+			type: DataTypes.CHAR(12),
 			allowNull: false,
 		},
 
@@ -23,59 +29,28 @@ User.init(
 		email: {
 			type: DataTypes.STRING,
 			unique: true,
-			validate: {
-				isEmail: {
-					msg: 'Email address is not formatted properly',
-				},
-			},
 		},
 
-		mobile: {
-			type: DataTypes.STRING(11),
+		mobileNo: {
+			type: DataTypes.STRING(12),
 			unique: true,
-			validate: {
-				isNumeric: {
-					msg: 'Mobile number may not contain any non-numeric values',
-				},
-			},
 		},
 
 		IDno: {
 			type: DataTypes.CHAR(12),
 			unique: true,
-			validate: {
-				isNumeric: {
-					msg: 'ID number may not contain any non-numeric values',
-				},
-			},
 		},
 
 		householdIncome: {
 			type: DataTypes.DECIMAL({ precision: 8, scale: 2 }),
-			validate: {
-				min: {
-					args: 0,
-					msg: 'Household income must be equal or greater than 0',
-				},
-			},
 		},
 
 		address: {
 			type: DataTypes.STRING,
-			validate: {
-				notEmpty: {
-					msg: 'Address cannot be empty',
-				},
-			},
 		},
 
 		jobTitle: {
 			type: DataTypes.STRING(50),
-			validate: {
-				notEmpty: {
-					msg: 'Job title cannot be empty',
-				},
-			},
 		},
 
 		// discriminator field
@@ -87,5 +62,19 @@ User.init(
 	},
 	{ sequelize }
 );
+
+export async function getNextUserId(transaction) {
+	return (
+		await sequelize.query(
+			`
+	SELECT AUTO_INCREMENT a
+	FROM information_schema.tables
+	WHERE table_name = 'users'
+	and table_schema = database();
+	`,
+			{ transaction, type: QueryTypes.SELECT }
+		)
+	)[0]['a'];
+}
 
 export default User;

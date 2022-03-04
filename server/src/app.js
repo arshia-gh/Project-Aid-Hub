@@ -17,8 +17,6 @@ app.use(pino({ logger }));
 app.use(api_prefix, express.json());
 app.use(api_prefix, express.urlencoded({ extended: true }));
 
-app.use();
-
 app.listen(sv_port, sv_host, () => {
 	logger.info(`server is listening on http://${sv_host}:${sv_port}`);
 });

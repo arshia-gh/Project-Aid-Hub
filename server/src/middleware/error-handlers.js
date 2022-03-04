@@ -4,6 +4,30 @@ import ApiError from '../utils/errors.js';
 
 const logger = getLoggerInstance(import.meta.url);
 
+export function validationErrorHandler(err, req, res, next) {
+	if (err && err.error && err.error.isJoi) {
+		next(
+			ApiError.badRequest(
+				'some fields did not meet the validation requirements',
+				{
+					name: 'ValidationError',
+					fields: err.error.details.reduce((obj, crt) => {
+						if (crt.path.length == 1 && crt.message) {
+							const key = crt.path.join('.');
+							const value = crt.message.replaceAll('"', '');
+							obj[key] = value;
+						}
+						return obj;
+					}, {}),
+				}
+			)
+		);
+		return;
+	} else {
+		next(err);
+	}
+}
+
 export function databaseErrorHandler(err, req, res, next) {
 	if (err instanceof UniqueConstraintError) {
 		const fields = { ...err.fields, PRIMARY: undefined };

@@ -1,45 +1,37 @@
 export const ERROR_CODE = {
+	INTERNAL: 500,
 	NOT_FOUND: 404,
 	FORBIDDEN: 403,
 	UNAUTHORIZED: 401,
 	BAD_REQUEST: 400,
 };
 
-export class APIError extends Error {
-	constructor(message, statusCode) {
+class ApiError extends Error {
+	constructor(code, message, details) {
 		super(message);
-		this.statusCode = statusCode;
+		this.code = code;
+		this.details = details;
+	}
+
+	static badRequest(message, details) {
+		return new ApiError(ERROR_CODE.BAD_REQUEST, message, details);
+	}
+
+	static unauthorized(message, details) {
+		return new ApiError(ERROR_CODE.UNAUTHORIZED, message, details);
+	}
+
+	static forbidden(message, details) {
+		return new ApiError(ERROR_CODE.FORBIDDEN, message, details);
+	}
+
+	static notFound(message, details) {
+		return new ApiError(ERROR_CODE.NOT_FOUND, message, details);
+	}
+
+	static internal(message, details) {
+		return new ApiError(ERROR_CODE.INTERNAL, message, details);
 	}
 }
 
-export class BadRequestError extends APIError {
-	constructor(message) {
-		super(message, ERROR_CODE.BAD_REQUEST);
-	}
-}
-
-export class NotFoundError extends APIError {
-	constructor(message) {
-		super(message, ERROR_CODE.NOT_FOUND);
-	}
-}
-
-export class UnauthorizedError extends APIError {
-	constructor(message) {
-		super(message, ERROR_CODE.UNAUTHORIZED);
-	}
-}
-
-export class ForbiddenError extends APIError {
-	constructor(message) {
-		super(message, ERROR_CODE.FORBIDDEN);
-	}
-}
-
-export default {
-	APIError,
-	NotFoundError,
-	ForbiddenError,
-	UnauthorizedError,
-	BadRequestError,
-};
+export default ApiError;

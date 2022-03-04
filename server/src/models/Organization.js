@@ -15,21 +15,11 @@ Organization.init(
 		name: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: 'Organization name cannot be empty',
-				},
-			},
 		},
 
 		address: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: 'Organization address cannot be empty',
-				},
-			},
 		},
 	},
 	{ sequelize, initialAutoIncrement: 1000 }

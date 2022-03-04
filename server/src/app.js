@@ -2,6 +2,11 @@ import dotenv from 'dotenv/config';
 import express from 'express';
 import pino from 'express-pino-logger';
 
+import {
+	apiErrorHandler,
+	databaseErrorHandler,
+} from './middleware/error-handlers.js';
+
 import sequelize from './sequelize.js';
 sequelize.sync();
 
@@ -16,6 +21,9 @@ const api_prefix = process.env.API_PREFIX || 'api';
 app.use(pino({ logger }));
 app.use(`/${api_prefix}`, express.json());
 app.use(`/${api_prefix}`, express.urlencoded({ extended: true }));
+
+app.use(databaseErrorHandler);
+app.use(apiErrorHandler);
 
 app.listen(sv_port, sv_host, () => {
 	logger.info(`server is listening on http://${sv_host}:${sv_port}`);

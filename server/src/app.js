@@ -2,6 +2,8 @@ import dotenv from 'dotenv/config';
 import express from 'express';
 import pino from 'express-pino-logger';
 
+// routes
+import orgRoutes from './routes/organization-routes.js';
 import {
 	apiErrorHandler,
 	databaseErrorHandler,
@@ -22,6 +24,7 @@ app.use(pino({ logger }));
 app.use(`/${api_prefix}`, express.json());
 app.use(`/${api_prefix}`, express.urlencoded({ extended: true }));
 
+app.use(`/${api_prefix}/organizations`, orgRoutes);
 app.use(databaseErrorHandler);
 app.use(apiErrorHandler);
 

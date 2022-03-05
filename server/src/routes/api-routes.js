@@ -1,5 +1,5 @@
 import express from 'express';
-import { login } from '../controller/user-controller.js';
+import { login } from '../controllers/user-controller.js';
 import { promisify, validator } from '../middleware/utils-middleware.js';
 import authSchema from '../schemas/auth-schema.js';
 import _ from 'lodash';

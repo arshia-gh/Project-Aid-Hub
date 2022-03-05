@@ -8,7 +8,7 @@ import express from 'express';
 import {
 	createOrgRepresentative,
 	getOrgRepresentatives,
-} from '../controller/user-controller.js';
+} from '../controllers/user-controller.js';
 
 import { promisify, validator } from '../middleware/utils-middleware.js';
 import OrgRepresentative from '../schemas/representative-schema.js';

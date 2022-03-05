@@ -4,7 +4,7 @@ import { promisify, validator } from '../middleware/utils-middleware.js';
 import {
 	getApplicants,
 	createApplicant,
-} from '../controller/user-controller.js';
+} from '../controllers/user-controller.js';
 import ApplicantSchema from '../schemas/applicant-schema.js';
 
 const router = express.Router({ mergeParams: true });

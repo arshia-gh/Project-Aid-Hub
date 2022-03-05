@@ -5,7 +5,7 @@ import {
 	createOrganization,
 	getOrganizationById,
 	getOrganizations,
-} from '../controller/organization-controller.js';
+} from '../controllers/organization-controller.js';
 
 import OrganizationSchema from '../schemas/organization-schema.js';
 

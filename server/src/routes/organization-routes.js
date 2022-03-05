@@ -9,6 +9,9 @@ import {
 
 import OrganizationSchema from '../schemas/organization-schema.js';
 
+import representativeRouter from './representative-routes.js';
+import applicantRouter from './applicant-routes.js';
+
 const router = express.Router();
 
 router.get(
@@ -49,5 +52,7 @@ router.post(
 	})
 );
 
+router.use('/:orgId/representatives', representativeRouter);
+router.use('/:orgId/applicants', applicantRouter);
 
 export default router;

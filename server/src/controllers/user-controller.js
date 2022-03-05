@@ -3,8 +3,14 @@ import _ from 'lodash';
 import User, { getNextUserId } from '../models/User.js';
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
-import { generateUsername } from '../utils/utils.js';
+import {
+	generateApplicantUsername,
+	generateRepresentativeUsername,
+} from '../utils/utils.js';
 import { findOrganizationByPk } from './organization-controller.js';
+
+import bcrypt from 'bcrypt';
+import { sendCredentials } from '../nodemailer.js';
 
 const toSafeUser = (user) => {
 	return _.omitBy(_.omit(user.toJSON(), ['id', 'password']), _.isNil);
@@ -21,18 +27,36 @@ export async function getApplicants(orgId) {
 }
 
 export async function createOrgRepresentative(orgRepresentative, orgId) {
-	orgRepresentative.password = faker.internet.password(12, true);
+	const createdRep = await sequelize.transaction(async (transaction) => {
+		const foundOrganization = await findOrganizationByPk(
+			orgId,
+			transaction
+		);
 
-	const foundOrganization = await findOrganizationByPk(orgId);
-	const createdRep = await foundOrganization.createRepresentative(
-		orgRepresentative
-	);
+		const password = faker.internet.password(12, true);
+		const hashedPassword = await bcrypt.hash(password, 10);
+		const username = generateRepresentativeUsername(
+			orgRepresentative.username
+		);
+
+		const createdAccount = await foundOrganization.createRepresentative(
+			{
+				...orgRepresentative,
+				username,
+				password: hashedPassword,
+			},
+			{ transaction }
+		);
+
+		await sendCredentials({ password, username }, orgRepresentative.email);
+
+		return createdAccount;
+	});
+
 	return toSafeUser(createdRep);
 }
 
 export async function createApplicant(applicant, orgId) {
-	applicant.password = faker.internet.password(12, true);
-
 	return sequelize.transaction(async (transaction) => {
 		const foundOrganization = await findOrganizationByPk(
 			orgId,
@@ -40,16 +64,23 @@ export async function createApplicant(applicant, orgId) {
 		);
 
 		const nextUserId = await getNextUserId(transaction);
-		applicant.username = generateUsername(nextUserId);
+
+		const password = faker.internet.password(12, true);
+		const hashedPassword = await bcrypt.hash(password, 10);
+		const username = generateApplicantUsername(nextUserId);
 
 		const createdApplicant = await foundOrganization.createApplicant(
-			applicant,
+			{
+				...applicant,
+				username,
+				password: hashedPassword,
+			},
 			{
 				transaction,
 			}
 		);
 
-		return toSafeUser(createdApplicant);
+		return { ...toSafeUser(createdApplicant), password };
 	});
 }
 
@@ -57,15 +88,16 @@ export async function login(username, password) {
 	const foundUser = await User.findOne({
 		where: {
 			username,
-			password,
 		},
 	});
 
-	if (!foundUser) {
-		throw ApiError.unauthorized(
-			'Invalid login credentials, please try again'
-		);
+	if (foundUser == null) {
+		throw ApiError.unauthorized('invalid username, please try again');
 	}
 
-	return toSafeUser(foundUser);
+	if (await bcrypt.compare(password, foundUser.getDataValue('password'))) {
+		return toSafeUser(foundUser);
+	}
+
+	throw ApiError.unauthorized('invalid password, please try again');
 }

@@ -3,6 +3,7 @@ import _ from 'lodash';
 import User, { getNextUserId } from '../models/User.js';
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
+import { generateUsername } from '../utils/utils.js';
 import { findOrganizationByPk } from './organization-controller.js';
 
 const toSafeUser = (user) => {

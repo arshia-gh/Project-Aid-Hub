@@ -1,6 +1,8 @@
 import { DataTypes, Model, QueryTypes } from '@sequelize/core';
 import sequelize from '../sequelize.js';
 
+import Document from './Document.js';
+
 class User extends Model {}
 
 User.init(
@@ -17,7 +19,7 @@ User.init(
 		},
 
 		password: {
-			type: DataTypes.CHAR(12),
+			type: DataTypes.STRING,
 			allowNull: false,
 		},
 
@@ -62,6 +64,9 @@ User.init(
 	},
 	{ sequelize }
 );
+
+User.hasMany(Document, { foreignKey: 'userId' });
+Document.belongsTo(User, { foreignKey: 'userId' });
 
 export async function getNextUserId(transaction) {
 	return (

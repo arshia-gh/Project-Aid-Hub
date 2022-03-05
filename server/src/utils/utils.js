@@ -1,9 +1,4 @@
-export const generateUsername = (id) => {
-	const date = new Date();
-	const year = date.getFullYear().toString().padStart(4, '0');
-	const month = date.getMonth().toString().padStart(2, '0');
-	const day = date.getDay().toString().padStart(2, '0');
-	const dateString = year + month + day;
+export const generateApplicantUsername = (id) =>
+	'AP' + id.toString().padStart(12, '0');
 
-	return 'AP' + dateString + id.toString().padStart(4, '0');
-};
+export const generateRepresentativeUsername = (username) => 'OP' + username;

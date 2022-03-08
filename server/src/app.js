@@ -1,6 +1,7 @@
 import dotenv from 'dotenv/config';
 import express from 'express';
 import pino from 'express-pino-logger';
+import cors from 'cors';
 
 // routes
 import orgRoutes from './routes/organization-routes.js';
@@ -24,6 +25,12 @@ const sv_port = process.env.SV_PORT || 8080;
 const api_prefix = process.env.API_PREFIX || 'api';
 
 app.use(pino({ logger }));
+app.use(
+	`/${api_prefix}`,
+	cors({
+		origin: '*',
+	})
+);
 app.use(`/${api_prefix}`, express.json());
 app.use(`/${api_prefix}`, express.urlencoded({ extended: true }));
 

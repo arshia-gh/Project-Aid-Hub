@@ -60,31 +60,31 @@ const ApplicantForm = ({ organizations = [], onSuccessRegister }) => {
 		resolver: yupResolver(schema),
 	});
 
-	const submitHandler = async (data) => {
-		try {
-			const response = await axios.post(
-				`/organizations/${selectedOrganization.id}/applicants`,
-				{
-					fullname: data.fullname,
-					IDno: data.IDno,
-					householdIncome: data.householdIncome,
-					address: data.address,
+	const submitHandler = (data) => {
+		axios
+			.post(`/organizations/${selectedOrganization.id}/applicants`, {
+				fullname: data.fullname,
+				IDno: data.IDno,
+				householdIncome: data.householdIncome,
+				address: data.address,
+			})
+			.then((response) => {
+				onSuccessRegister(response.data);
+			})
+			.catch((err) => {
+				console.log(err.response);
+				if (err.response) {
+					const { error, code } = err.response.data;
+					if (code === 400 && error.fields) {
+						for (const key in error.fields) {
+							setError(key, {
+								message: error.fields[key] + ' is not unique',
+							});
+						}
+					}
+					alertError('Registration failed', error.message);
 				}
-			);
-
-			onSuccessRegister(response.data);
-		} catch (err) {
-			const { error, code } = err.response.data;
-			if (code === 400 && error.fields) {
-				for (const key in error.fields) {
-					setError(key, {
-						message: error.fields[key] + ' is not unique',
-					});
-				}
-			}
-
-			alertError('Registration failed', error.message);
-		}
+			});
 	};
 
 	return (
@@ -102,8 +102,8 @@ const ApplicantForm = ({ organizations = [], onSuccessRegister }) => {
 					id='input-organization-name'
 					onChange={(e) => onSelectOrganization(e)}
 					disabled={organizations.length === 1}>
-					{organizations.map((org) => (
-						<option value={org.id} key={org.id}>
+					{organizations.map((org, key) => (
+						<option value={org.id} key={key}>
 							{org.name}
 						</option>
 					))}

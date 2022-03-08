@@ -9,6 +9,7 @@ import 'assets/scss/argon-dashboard-react.scss';
 import AdminLayout from 'layouts/Admin.js';
 import AuthLayout from 'layouts/Auth.js';
 import ApplicantLayout from 'layouts/Applicant.js';
+import RepresentativeLayout from 'layouts/Representative.js';
 import { AlertProvider } from 'contexts/AlertProvider';
 import { AuthProvider } from 'contexts/AuthProvider';
 
@@ -24,6 +25,10 @@ ReactDOM.render(
 					<Route
 						path='/applicant'
 						render={(props) => <ApplicantLayout {...props} />}
+					/>
+					<Route
+						path='/representative'
+						render={(props) => <RepresentativeLayout {...props} />}
 					/>
 					<Route
 						path='/auth'

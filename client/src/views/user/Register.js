@@ -24,8 +24,10 @@ const Register = () => {
 
 				isMounted && setOrganizations(response.data.result);
 			} catch (err) {
-				const { error, code } = err.response.data;
-				alertError(`An ${code} error occurred`, error.message);
+				if (err.response) {
+					const { error, code } = err.response.data;
+					alertError(`An ${code} error occurred`, error.message);
+				}
 			}
 		};
 
@@ -37,7 +39,7 @@ const Register = () => {
 		};
 	}, [alertError]);
 
-	const onSuccessRegister = async (data) => {
+	const onSuccessRegister = (data) => {
 		setAuth({
 			user: data.result,
 			role: data.result.userType,

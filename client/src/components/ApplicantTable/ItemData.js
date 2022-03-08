@@ -1,21 +1,12 @@
 // reactstrap components
-import { Badge } from 'reactstrap';
 
-const ItemData = ({ org, isActive }) => {
+const ItemData = ({ applicant }) => {
 	return (
 		<>
-			<th scope='row'>
-				<Badge
-					color='primary'
-					style={{
-						cursor: 'default',
-					}}
-					className={isActive ? 'text-white bg-blue' : ''}>
-					{org.id}
-				</Badge>
-			</th>
-			<td>{org.name}</td>
-			<td>{org.address}</td>
+			<th scope='row'>{applicant.fullname}</th>
+			<td>{applicant.IDno}</td>
+			<td>RM{applicant.householdIncome}</td>
+			<td>{applicant.address}</td>
 		</>
 	);
 };

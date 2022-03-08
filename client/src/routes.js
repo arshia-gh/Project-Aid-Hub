@@ -5,20 +5,21 @@ import Login from 'views/user/Login';
 import Register from 'views/user/Register';
 import Profile from 'views/applicant/Profile';
 import AddRepresentative from 'views/admin/AddRepresentative';
-import RepresentativeIndex from 'views/applicant/RepresentativeIndex';
+import RepresentativeIndex from 'views/representative/RepresentativeIndex';
+import AddApplicant from 'views/representative/AddApplicant';
 
 var routes = [
-	// {
-	// 	path: '/icons',
-	// 	name: 'Icons',
-	// 	icon: 'ni ni-planet text-blue',
-	// 	component: Icons,
-	// 	layout: '/admin',
-	// },
+	{
+		path: '/new-applicant',
+		name: 'Add Applicant',
+		icon: 'fas fa-plus-square text-warning',
+		component: AddApplicant,
+		layout: '/representative',
+	},
 	{
 		path: '/index',
-		name: 'Profile',
-		icon: 'ni ni-single-02 text-yellow',
+		name: 'Dashboard',
+		icon: 'fas fa-book text-blue',
 		component: RepresentativeIndex,
 		layout: '/representative',
 	},

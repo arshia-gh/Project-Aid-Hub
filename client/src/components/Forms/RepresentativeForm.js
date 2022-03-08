@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { useForm, Controller } from 'react-hook-form';
 
@@ -8,7 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'api/axios';
 import FormFooter from 'components/UI/FormFooter';
 
-import { Button, FormText, FormGroup, Form, Input, Row, Col } from 'reactstrap';
+import { FormText, FormGroup, Form, Input, Row, Col } from 'reactstrap';
 import useAlert from 'hooks/useAlert';
 
 const schema = yup.object().shape({

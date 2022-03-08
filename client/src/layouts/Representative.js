@@ -17,7 +17,7 @@ const RepresentativeLayout = (props) => {
 
 	const getRoutes = (routes) => {
 		return routes.map((prop, key) => {
-			if (prop.layout === '/applicant') {
+			if (prop.layout === '/representative') {
 				return (
 					<Route
 						path={prop.layout + prop.path}
@@ -44,7 +44,7 @@ const RepresentativeLayout = (props) => {
 		return 'Brand';
 	};
 
-	if (auth == null || auth.role !== 'APPLICANT') {
+	if (auth == null || auth.role !== 'ORG_REPRESENTATIVE') {
 		return <Redirect to='/auth/login' />;
 	}
 
@@ -56,7 +56,7 @@ const RepresentativeLayout = (props) => {
 					(route) => route.layout === '/representative'
 				)}
 				logo={{
-					innerLink: '/applicant/profile',
+					innerLink: '/representative/index',
 					imgSrc: require('../assets/img/brand/logo-1.png').default,
 					imgAlt: 'Project Aid Hub logo',
 				}}

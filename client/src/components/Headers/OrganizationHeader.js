@@ -1,8 +1,7 @@
 // reactstrap components
 import { Container, Row, Col } from 'reactstrap';
 
-const UserHeader = (props) => {
-	const { name, address } = props.organization;
+const OrganizationHeader = ({ organization = {} }) => {
 	return (
 		<>
 			<div
@@ -23,8 +22,12 @@ const UserHeader = (props) => {
 				<Container className='d-flex align-items-center' fluid>
 					<Row className='w-100'>
 						<Col className='text-center text-md-left'>
-							<h1 className='display-2 text-white'>{name}</h1>
-							<p className='text-white mt-0 mb-5'>{address}</p>
+							<h1 className='display-2 text-white'>
+								{organization.name}
+							</h1>
+							<p className='text-white mt-0 mb-5'>
+								{organization.address}
+							</p>
 						</Col>
 					</Row>
 				</Container>
@@ -33,4 +36,4 @@ const UserHeader = (props) => {
 	);
 };
 
-export default UserHeader;
+export default OrganizationHeader;

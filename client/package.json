@@ -67,7 +67,8 @@
   },
   "devDependencies": {
     "gulp": "4.0.2",
-    "gulp-append-prepend": "1.0.9"
+    "gulp-append-prepend": "1.0.9",
+    "react-error-overlay": "^6.0.9"
   },
   "optionalDependencies": {
     "eslint-plugin-flowtype": "5.8.0",

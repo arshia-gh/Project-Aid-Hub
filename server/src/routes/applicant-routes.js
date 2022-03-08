@@ -1,3 +1,9 @@
+/*
+ * --IMPORTANT--
+ * applicant router must be used with the organization router,
+ * all routes require the param `orgId` to exist on the request object
+ */
+
 import express from 'express';
 
 import { promisify, validator } from '../middleware/utils-middleware.js';

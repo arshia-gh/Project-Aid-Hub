@@ -20,7 +20,8 @@ router.post(
 		const authToken = jwt.sign(authenticatedUser, jwtSecret);
 
 		res.status(200).json({
-			result: authToken,
+			result: authenticatedUser,
+			token: authToken,
 			code: 200,
 		});
 	})
@@ -46,7 +47,11 @@ router.post(
 		const authToken = jwt.sign({ userType: 'ADMIN' }, jwtSecret);
 
 		res.status(200).json({
-			result: authToken,
+			result: {
+				fullname: 'Admin',
+				userType: 'ADMIN',
+			},
+			token: authToken,
 			code: 200,
 		});
 	}

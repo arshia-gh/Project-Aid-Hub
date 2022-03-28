@@ -1,5 +1,10 @@
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import {
+	useRoutes,
+	useLocation,
+	matchRoutes,
+	Navigate,
+} from 'react-router-dom';
 
 // reactstrap components
 import { Container } from 'reactstrap';
@@ -9,65 +14,49 @@ import DashboardNavbar from 'components/Navbars/DashboardNavbar.js';
 import DashboardFooter from 'components/Footers/DashboardFooter.js';
 import Sidebar from 'components/Sidebar/Sidebar.js';
 
-import routes from 'routes.js';
-import useAuth from 'hooks/useAuth';
+import AddRepresentative from 'views/admin/AddRepresentative';
+import ViewOrganization from 'views/admin/ViewOrganization';
+import ViewAllOrganizations from 'views/admin/ViewAllOrganizations';
+import AddOrganization from 'views/admin/AddOrganization';
 
-const AdminLayout = (props) => {
-	const { auth } = useAuth();
+const routes = [
+	{
+		index: true,
+		name: 'Dashboard',
+		icon: 'fas fa-book text-blue',
+		element: <ViewAllOrganizations />,
+	},
+	{
+		path: 'organizations/:id/new-representative',
+		name: 'Add Representative',
+		element: <AddRepresentative />,
+		invisible: true,
+	},
+	{
+		path: 'organizations/:id',
+		name: 'View Organization',
+		element: <ViewOrganization />,
+		invisible: true,
+	},
+	{
+		path: 'new-organization',
+		name: 'Add Organization',
+		element: <AddOrganization />,
+		icon: 'fas fa-plus-square text-warning',
+	},
+];
 
-	const getRoutes = (routes) => {
-		return routes.map((prop, key) => {
-			if (prop.layout === '/admin') {
-				return (
-					<Route
-						path={prop.layout + prop.path}
-						component={prop.component}
-						key={key}
-					/>
-				);
-			} else {
-				return null;
-			}
-		});
-	};
-
-	const getBrandText = (path) => {
-		for (let i = 0; i < routes.length; i++) {
-			if (
-				props.location.pathname.indexOf(
-					routes[i].layout + routes[i].path
-				) !== -1
-			) {
-				return routes[i].name;
-			}
-		}
-		return 'Brand';
-	};
-
-	if (auth == null || auth.role !== 'ADMIN') {
-		return <Redirect to='/auth/login' />;
-	}
+const AdminLayout = () => {
+	const routeResults = useRoutes(routes);
+	const location = useLocation();
+	const [match] = matchRoutes(routes, location.pathname, '/admin') ?? [];
 
 	return (
 		<>
-			<Sidebar
-				{...props}
-				routes={routes.filter((route) => route.layout === '/admin')}
-				logo={{
-					innerLink: '/admin/organizations',
-					imgSrc: require('../assets/img/brand/logo-1.png').default,
-					imgAlt: 'Project Aid Hub logo',
-				}}
-			/>
+			<Sidebar routes={routes} indexLink='/admin' />
 			<div className='main-content'>
-				<DashboardNavbar
-					{...props}
-					brandText={getBrandText(props.location.pathname)}
-				/>
-				<Switch>
-					{getRoutes(routes)}
-					<Redirect from='*' to='/admin/organizations' />
-				</Switch>
+				<DashboardNavbar brandText={match?.route.name || 'Dashboard'} />
+				{routeResults || <Navigate to='./' replace />}
 				<Container fluid>
 					<DashboardFooter />
 				</Container>

@@ -1,26 +1,20 @@
 import OrganizationForm from 'components/Forms/OrganizationForm';
 import AdminHeader from 'components/Headers/AdminHeader';
-import { AlertContext } from 'contexts/AlertProvider';
-
-import { useHistory } from 'react-router-dom';
-import { useContext } from 'react';
+import { useAlerts } from 'hooks';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardBody, Col, Container, Row } from 'reactstrap';
 
 const AddOrganization = () => {
-	const { success, error } = useContext(AlertContext);
+	const navigate = useNavigate();
+	const { addAlert } = useAlerts();
 
-	const history = useHistory();
-
-	const onAddOrganization = (payload) => {
-		if (payload.error) {
-			error(
-				`Error ${payload.data.code}`,
-				`Error ${payload.data.message}`
-			);
-		} else {
-			success('Success', 'Organization was successfully created');
-			history.push('/admin/organizations');
-		}
+	const onAddOrganization = () => {
+		addAlert({
+			title: 'Success',
+			message: 'Organization was successfully added',
+			mode: 'success',
+		});
+		navigate('..', { replace: true });
 	};
 	return (
 		<>
@@ -35,7 +29,7 @@ const AddOrganization = () => {
 						</Row>
 					</CardHeader>
 					<CardBody>
-						<OrganizationForm onSubmit={onAddOrganization} />
+						<OrganizationForm onSuccess={onAddOrganization} />
 					</CardBody>
 				</Card>
 			</Container>

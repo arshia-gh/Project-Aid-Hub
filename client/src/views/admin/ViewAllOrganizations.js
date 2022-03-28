@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 
 import axios from 'api/axios';
 
@@ -10,20 +10,17 @@ import {
 	CardHeader,
 	Container,
 	Row,
-	Badge
+	Badge,
 } from 'reactstrap';
 
 import AdminHeader from 'components/Headers/AdminHeader';
-import { Link, useLocation } from 'react-router-dom';
-import OrganizationTable from 'components/OrganizationTable/OrganizationTable';
-import { AlertContext } from 'contexts/AlertProvider';
-import Alert from 'components/UI/Alert';
+import { Link } from 'react-router-dom';
+import Table from 'components/UI/Table';
+import { useAlerts } from 'hooks';
 
-const Organizations = () => {
-	const location = useLocation();
+const ViewAllOrganizations = () => {
 	const [organizations, setOrganizations] = useState([]);
-
-	const { error: alertError } = useContext(AlertContext);
+	const { addAlert } = useAlerts();
 
 	useEffect(() => {
 		let isMounted = true;
@@ -37,8 +34,14 @@ const Organizations = () => {
 
 				isMounted && setOrganizations(response.data.result);
 			} catch (err) {
-				const { error, code } = err.response.data;
-				alertError(`An ${code} error occurred`, error.message);
+				if (err.response) {
+					const { error, code } = err.response.data;
+					addAlert({
+						title: `An ${code} error occurred`,
+						message: error.message,
+						mode: 'danger',
+					});
+				}
 			}
 		};
 
@@ -48,13 +51,12 @@ const Organizations = () => {
 			isMounted = false;
 			controller.abort();
 		};
-	}, [alertError]);
+	}, [addAlert]);
 
 	return (
 		<>
 			<AdminHeader />
 			<Container className='mt--7' fluid>
-				<Alert/>
 				<Row>
 					<div className='col'>
 						<Card className='shadow'>
@@ -66,18 +68,42 @@ const Organizations = () => {
 										</h3>
 									</div>
 									<div className='col text-right'>
-										<Link to={`new-organization`}>
-											<Button color='primary' size='sm'>
-												Add Organization
-											</Button>
-										</Link>
+										<Button
+											tag={Link}
+											to='new-organization'
+											color='primary'
+											size='sm'>
+											Add Organization
+										</Button>
 									</div>
 								</Row>
 							</CardHeader>
-							<OrganizationTable organizations={organizations} location={location}/>
+							<Table
+								data={organizations}
+								headers={{
+									id: 'ID',
+									name: 'Name',
+									address: 'Address',
+								}}
+								links={[
+									{
+										url: (org) => `organizations/${org.id}`,
+										content: 'View Representatives',
+									},
+									{
+										url: (org) =>
+											`organizations/${org.id}/new-representative`,
+										content: 'Add Representative',
+									},
+								]}
+								rowKey='id'
+								hoverable
+							/>
 							{organizations.length === 0 && (
 								<CardFooter>
-									<Badge color='info'>No organization was found</Badge>
+									<Badge color='info'>
+										No organization was found
+									</Badge>
 								</CardFooter>
 							)}
 						</Card>
@@ -88,4 +114,4 @@ const Organizations = () => {
 	);
 };
 
-export default Organizations;
+export default ViewAllOrganizations;

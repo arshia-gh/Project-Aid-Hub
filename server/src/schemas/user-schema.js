@@ -9,7 +9,7 @@ export default Joi.object({
 		.required(),
 	email: Joi.string().email().max(255),
 	mobileNo: Joi.string()
-		.pattern(/^[0-9()+-]+$/)
+		.pattern(/^[0-9()+-\s]+$/)
 		.custom((value) => {
 			const { isValid, phoneNumber } = phone(value, {
 				country: 'MY',

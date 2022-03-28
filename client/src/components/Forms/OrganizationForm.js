@@ -1,101 +1,71 @@
-import { useForm, Controller } from 'react-hook-form';
-import { FormGroup, Form, Input, Row, Col, FormText } from 'reactstrap';
+import { FormGroup, Form as FormBS } from 'reactstrap';
+import { Formik, Form } from 'formik';
+import schema from 'schemas/organisationSchema';
+import axios, { parseError } from 'api/axios';
+import FormFooter from 'components/Footers/FormFooter';
+import Field from 'components/UI/Form/Field';
+import { useAlerts } from 'hooks';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+const OrganizationForm = ({ onSuccess }) => {
+	const { addAlert } = useAlerts();
+	const submitHandler = async (values, { setErrors }) => {
+		const castValues = schema.cast(values);
+		try {
+			const response = await axios.post('/organizations', {
+				name: castValues.name,
+				address: castValues.address,
+			});
 
-import axios from 'api/axios';
-import FormFooter from 'components/UI/FormFooter';
-
-const schema = yup.object().shape({
-	name: yup.string().max(255).required('name is required'),
-	address: yup.string().max(255).required('address is required'),
-});
-
-const OrganizationForm = ({ onSubmit }) => {
-	const {
-		handleSubmit,
-		formState: { errors },
-		control,
-		reset,
-	} = useForm({
-		defaultValues: { name: '', address: '' },
-		resolver: yupResolver(schema),
-	});
-
-	const onSubmitHandler = async (data) => {
-		const payload = await axios.post('/organizations', {
-			name: data.name,
-			address: data.address,
-		});
-
-		onSubmit(payload);
+			onSuccess(response.data);
+		} catch (err) {
+			if (err.response?.data.error && err.response?.data.code) {
+				const { message, fields } = parseError(err.response.data);
+				setErrors(fields);
+				addAlert({
+					title: 'Submission failed',
+					message,
+					mode: 'danger',
+				});
+			}
+		}
 	};
 
 	return (
-		<Form onSubmit={handleSubmit(onSubmitHandler)}>
-			<h6 className='heading-small text-muted mb-4'>
-				Organization Information
-			</h6>
-			<div className='pl-lg-4'>
-				<Row>
-					<Col sm='12'>
+		<Formik
+			initialValues={{ name: '', address: '' }}
+			onSubmit={submitHandler}
+			validateOnMount
+			validationSchema={schema}>
+			{({ isSubmitting, resetForm }) => (
+				<FormBS tag={Form}>
+					<h6 className='heading-small text-muted mb-4'>
+						Organization Information
+					</h6>
+					<div className='pl-lg-4'>
 						<FormGroup>
-							<label
-								className='form-control-label'
-								htmlFor='input-name'>
-								Organization Name
-							</label>
-							<Controller
+							<Field
+								label='Organization Name'
 								name='name'
-								control={control}
-								render={({ field }) => (
-									<Input
-										className='form-control-alternative'
-										id='input-name'
-										placeholder='Organization name'
-										name='name'
-										type='text'
-										{...field}
-									/>
-								)}
+								type='text'
 							/>
-							<FormText className='text-red'>
-								{errors.name?.message}
-							</FormText>
 						</FormGroup>
-					</Col>
-					<Col sm='12'>
 						<FormGroup>
-							<label
-								className='form-control-label'
-								htmlFor='input-address'>
-								Organization Address
-							</label>
-							<Controller
+							<Field
+								label='Organization Address'
 								name='address'
-								control={control}
-								render={({ field }) => (
-									<Input
-										className='form-control-alternative'
-										placeholder='555 Parisian Walk, 88240, West Rodrigo, Florida, Qatar'
-										rows='4'
-										id='input-address'
-										type='textarea'
-										{...field}
-									/>
-								)}
+								type='textarea'
+								rows={4}
 							/>
-							<FormText className='text-red'>
-								{errors.address?.message}
-							</FormText>
 						</FormGroup>
-					</Col>
-				</Row>
-			</div>
-			<hr className='my-4' />
-			<FormFooter onReset={reset} />
-		</Form>
+					</div>
+					<hr className='my-4' />
+					<FormFooter
+						isSubmitting={isSubmitting}
+						onReset={resetForm}
+					/>
+				</FormBS>
+			)}
+		</Formik>
 	);
 };
 

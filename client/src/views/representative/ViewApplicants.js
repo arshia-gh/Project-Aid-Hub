@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 
 import axios from 'api/axios';
 
@@ -11,24 +11,21 @@ import {
 	Container,
 	Row,
 	Badge,
-	Alert,
 	UncontrolledAlert,
 } from 'reactstrap';
 
 import OrgHeader from 'components/Headers/OrganizationHeader';
 import { Link } from 'react-router-dom';
-import { AlertContext } from 'contexts/AlertProvider';
-import CustomAlert from 'components/UI/Alert';
 import useAuth from 'hooks/useAuth';
-import ApplicantTable from 'components/ApplicantTable/ApplicantTable';
+import Table from 'components/UI/Table';
+import { useAlerts } from 'hooks';
 
-const RepresentativeIndex = () => {
+const ViewApplicants = () => {
 	const { auth } = useAuth();
+	const { addAlert } = useAlerts();
 
 	const [applicants, setApplicants] = useState([]);
 	const [organization, setOrganization] = useState({});
-
-	const { error: alertError } = useContext(AlertContext);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -51,7 +48,11 @@ const RepresentativeIndex = () => {
 			} catch (err) {
 				if (err.response) {
 					const { error, code } = err.response.data;
-					alertError(`An ${code} error occurred`, error.message);
+					addAlert({
+						title: `An ${code} error occurred`,
+						message: error.message,
+						mode: 'danger',
+					});
 				}
 			}
 		};
@@ -62,13 +63,12 @@ const RepresentativeIndex = () => {
 			isMounted = false;
 			controller.abort();
 		};
-	}, [alertError, auth]);
+	}, [auth, addAlert]);
 
 	return (
 		<>
 			<OrgHeader organization={organization} />
 			<Container className='mt--7' fluid>
-				<CustomAlert />
 				{auth.newApplicant && (
 					<UncontrolledAlert color='primary' fade={false}>
 						<span className='alert-inner--text'>
@@ -102,9 +102,17 @@ const RepresentativeIndex = () => {
 									</div>
 								</Row>
 							</CardHeader>
-							<ApplicantTable
-								applicants={applicants}
-								organization={organization}
+							<Table
+								data={applicants}
+								headers={{
+									username: 'Username',
+									fullname: 'Full Name',
+									IDno: 'ID Number',
+									householdIncome: 'Household Income',
+									address: 'Address',
+								}}
+								rowKey='username'
+								hoverable
 							/>
 							{applicants.length === 0 && (
 								<CardFooter>
@@ -121,4 +129,4 @@ const RepresentativeIndex = () => {
 	);
 };
 
-export default RepresentativeIndex;
+export default ViewApplicants;

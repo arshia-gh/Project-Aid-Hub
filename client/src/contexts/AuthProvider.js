@@ -2,20 +2,25 @@ import React, { useState, createContext, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
-export const AuthProvider = (props) => {
+export const AuthProvider = ({ children }) => {
 	const [auth, setAuth] = useState(null);
+	const [isLoading, setLoading] = useState(true);
 
 	useEffect(() => {
-		setAuth(JSON.parse(window.localStorage.getItem('auth')));
+		const savedAuth = JSON.parse(localStorage.getItem('auth'));
+		setAuth(() => {
+			setLoading(false);
+			return savedAuth ?? null;
+		});
 	}, []);
 
 	useEffect(() => {
-		window.localStorage.setItem('auth', JSON.stringify(auth));
+		localStorage.setItem('auth', JSON.stringify(auth));
 	}, [auth]);
 
 	return (
-		<AuthContext.Provider value={{ auth, setAuth }}>
-			{props.children}
+		<AuthContext.Provider value={{ isLoading, auth, setAuth }}>
+			{children}
 		</AuthContext.Provider>
 	);
 };

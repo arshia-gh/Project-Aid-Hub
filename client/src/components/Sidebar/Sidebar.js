@@ -1,8 +1,6 @@
 /*eslint-disable*/
 import { useState } from 'react';
-import { NavLink as NavLinkRRD, Link } from 'react-router-dom';
-// nodejs library to set properties for components
-import { PropTypes } from 'prop-types';
+import { NavLink as NavLinkRRD, Link, useNavigate } from 'react-router-dom';
 
 // reactstrap components
 import {
@@ -21,13 +19,12 @@ import {
 	Row,
 	Col,
 } from 'reactstrap';
+import useAuth from 'hooks/useAuth';
 
 const Sidebar = (props) => {
+	const { routes, indexLink } = props;
+
 	const [collapseOpen, setCollapseOpen] = useState();
-	// verifies if routeName is the one active (in browser input)
-	const activeRoute = (routeName) => {
-		return props.location.pathname.indexOf(routeName) > -1 ? 'active' : '';
-	};
 	// toggles collapse between opened and closed (true/false)
 	const toggleCollapse = () => {
 		setCollapseOpen((data) => !data);
@@ -36,38 +33,28 @@ const Sidebar = (props) => {
 	const closeCollapse = () => {
 		setCollapseOpen(false);
 	};
+
+	const { setAuth } = useAuth();
+	const navigate = useNavigate();
+
 	// creates the links that appear in the left menu / Sidebar
 	const createLinks = (routes) => {
-		return routes.map((prop, key) => {
-			if (prop.invisible) return null;
+		return routes.map((route, key) => {
+			if (route.invisible) return null;
 			return (
 				<NavItem key={key}>
 					<NavLink
-						to={prop.layout + prop.path}
+						to={route.index ? indexLink : route.path}
+						end={route.index}
 						tag={NavLinkRRD}
-						onClick={closeCollapse}
-						activeClassName='active'>
-						<i className={prop.icon} />
-						{prop.name}
+						onClick={closeCollapse}>
+						<i className={route.icon} />
+						{route.name}
 					</NavLink>
 				</NavItem>
 			);
 		});
 	};
-
-	const { bgColor, routes, logo } = props;
-	let navbarBrandProps;
-	if (logo && logo.innerLink) {
-		navbarBrandProps = {
-			to: logo.innerLink,
-			tag: Link,
-		};
-	} else if (logo && logo.outterLink) {
-		navbarBrandProps = {
-			href: logo.outterLink,
-			target: '_blank',
-		};
-	}
 
 	return (
 		<Navbar
@@ -83,22 +70,21 @@ const Sidebar = (props) => {
 					<span className='navbar-toggler-icon' />
 				</button>
 				{/* Brand */}
-				{logo ? (
-					<NavbarBrand
-						className='pt-0 py-0 d-flex justify-content-center align-items-center'
-						{...navbarBrandProps}>
-						<img
-							alt={logo.imgAlt}
-							className='navbar-brand-img h-auto'
-							style={{
-								minWidth: '100%',
-								minHeight: '7rem',
-								objectFit: 'cover',
-							}}
-							src={logo.imgSrc}
-						/>
-					</NavbarBrand>
-				) : null}
+				<NavbarBrand
+					className='pt-0 py-0 d-flex justify-content-center align-items-center'
+					tag={Link}
+					to={indexLink}>
+					<img
+						alt='Project Aid Hub logo'
+						className='navbar-brand-img h-auto'
+						style={{
+							minWidth: '100%',
+							minHeight: '7rem',
+							objectFit: 'cover',
+						}}
+						src={require('assets/img/brand/logo-1.png').default}
+					/>
+				</NavbarBrand>
 				{/* User */}
 				<Nav className='align-items-center d-md-none'>
 					<UncontrolledDropdown nav>
@@ -122,14 +108,11 @@ const Sidebar = (props) => {
 								tag='div'>
 								<h6 className='text-overflow m-0'>Welcome!</h6>
 							</DropdownItem>
-							<DropdownItem to='/admin/user-profile' tag={Link}>
-								<i className='ni ni-single-02' />
-								<span>My profile</span>
-							</DropdownItem>
-							<DropdownItem divider />
 							<DropdownItem
-								href='#pablo'
-								onClick={(e) => e.preventDefault()}>
+								onClick={() => {
+									navigate('/login/user');
+									setAuth(null);
+								}}>
 								<i className='ni ni-user-run' />
 								<span>Logout</span>
 							</DropdownItem>
@@ -141,25 +124,21 @@ const Sidebar = (props) => {
 					{/* Collapse header */}
 					<div className='navbar-collapse-header d-md-none'>
 						<Row>
-							{logo ? (
-								<Col className='collapse-brand' xs='6'>
-									{logo.innerLink ? (
-										<Link to={logo.innerLink}>
-											<img
-												alt={logo.imgAlt}
-												src={logo.imgSrc}
-											/>
-										</Link>
-									) : (
-										<a href={logo.outterLink}>
-											<img
-												alt={logo.imgAlt}
-												src={logo.imgSrc}
-											/>
-										</a>
-									)}
-								</Col>
-							) : null}
+							<Col className='collapse-brand' xs='6'>
+								<img
+									alt='Project Aid Hub logo'
+									className='navbar-brand-img h-auto'
+									style={{
+										minWidth: '100%',
+										minHeight: '7rem',
+										objectFit: 'cover',
+									}}
+									src={
+										require('assets/img/brand/logo-1.png')
+											.default
+									}
+								/>
+							</Col>
 							<Col className='collapse-close' xs='6'>
 								<button
 									className='navbar-toggler'
@@ -177,27 +156,6 @@ const Sidebar = (props) => {
 			</Container>
 		</Navbar>
 	);
-};
-
-Sidebar.defaultProps = {
-	routes: [{}],
-};
-
-Sidebar.propTypes = {
-	// links that will be displayed inside the component
-	routes: PropTypes.arrayOf(PropTypes.object),
-	logo: PropTypes.shape({
-		// innerLink is for links that will direct the user within the app
-		// it will be rendered as <Link to="...">...</Link> tag
-		innerLink: PropTypes.string,
-		// outterLink is for links that will direct the user outside the app
-		// it will be rendered as simple <a href="...">...</a> tag
-		outterLink: PropTypes.string,
-		// the image src of the logo
-		imgSrc: PropTypes.string.isRequired,
-		// the alt for the img
-		imgAlt: PropTypes.string.isRequired,
-	}),
 };
 
 export default Sidebar;

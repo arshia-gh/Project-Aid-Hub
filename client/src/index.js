@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import 'assets/plugins/nucleo/css/nucleo.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -10,34 +10,54 @@ import AdminLayout from 'layouts/Admin.js';
 import AuthLayout from 'layouts/Auth.js';
 import ApplicantLayout from 'layouts/Applicant.js';
 import RepresentativeLayout from 'layouts/Representative.js';
-import { AlertProvider } from 'contexts/AlertProvider';
 import { AuthProvider } from 'contexts/AuthProvider';
+import RequireAuth from 'components/Utils/RequireAuth';
+import { AlertPortalProvider } from 'contexts/AlertPortalProvider';
+import { AlertPortal } from 'components/AlertPortal';
 
 ReactDOM.render(
 	<AuthProvider>
-		<AlertProvider>
+		<AlertPortalProvider>
 			<BrowserRouter>
-				<Switch>
+				<AlertPortal autoClose />
+				<Routes>
 					<Route
-						path='/admin'
-						render={(props) => <AdminLayout {...props} />}
-					/>
+						element={
+							<RequireAuth
+								allowedRole='ADMIN'
+								onFailureUrl='/login/admin'
+							/>
+						}>
+						<Route path='/admin/*' element={<AdminLayout />} />
+					</Route>
 					<Route
-						path='/applicant'
-						render={(props) => <ApplicantLayout {...props} />}
-					/>
+						element={
+							<RequireAuth
+								allowedRole='APPLICANT'
+								onFailureUrl='/login/user'
+							/>
+						}>
+						<Route
+							path='/applicant/*'
+							element={<ApplicantLayout />}
+						/>
+					</Route>
 					<Route
-						path='/representative'
-						render={(props) => <RepresentativeLayout {...props} />}
-					/>
-					<Route
-						path='/auth'
-						render={(props) => <AuthLayout {...props} />}
-					/>
-					<Redirect from='*' to='/auth' />
-				</Switch>
+						element={
+							<RequireAuth
+								allowedRole='ORG_REPRESENTATIVE'
+								onFailureUrl='/login/user'
+							/>
+						}>
+						<Route
+							path='/representative/*'
+							element={<RepresentativeLayout />}
+						/>
+					</Route>
+					<Route path='*' element={<AuthLayout />} />
+				</Routes>
 			</BrowserRouter>
-		</AlertProvider>
+		</AlertPortalProvider>
 	</AuthProvider>,
 	document.getElementById('root')
 );

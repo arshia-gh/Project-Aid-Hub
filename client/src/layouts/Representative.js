@@ -1,5 +1,10 @@
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import {
+	Navigate,
+	useLocation,
+	matchRoutes,
+	useRoutes,
+} from 'react-router-dom';
 
 // reactstrap components
 import { Container } from 'reactstrap';
@@ -8,68 +13,36 @@ import { Container } from 'reactstrap';
 import DashboardNavbar from 'components/Navbars/DashboardNavbar.js';
 import DashboardFooter from 'components/Footers/DashboardFooter.js';
 import Sidebar from 'components/Sidebar/Sidebar.js';
+import AddApplicant from 'views/representative/AddApplicant';
+import ViewApplicants from 'views/representative/ViewApplicants';
 
-import routes from 'routes.js';
-import useAuth from 'hooks/useAuth';
+const routes = [
+	{
+		index: true,
+		name: 'Dashboard',
+		icon: 'fas fa-book text-blue',
+		element: <ViewApplicants />,
+	},
+	{
+		path: 'new-applicant',
+		name: 'Add Applicant',
+		icon: 'fas fa-plus-square text-warning',
+		element: <AddApplicant />,
+	},
+];
 
-const RepresentativeLayout = (props) => {
-	const { auth } = useAuth();
-
-	const getRoutes = (routes) => {
-		return routes.map((prop, key) => {
-			if (prop.layout === '/representative') {
-				return (
-					<Route
-						path={prop.layout + prop.path}
-						component={prop.component}
-						key={key}
-					/>
-				);
-			} else {
-				return null;
-			}
-		});
-	};
-
-	const getBrandText = (path) => {
-		for (let i = 0; i < routes.length; i++) {
-			if (
-				props.location.pathname.indexOf(
-					routes[i].layout + routes[i].path
-				) !== -1
-			) {
-				return routes[i].name;
-			}
-		}
-		return 'Brand';
-	};
-
-	if (auth == null || auth.role !== 'ORG_REPRESENTATIVE') {
-		return <Redirect to='/auth/login' />;
-	}
+const RepresentativeLayout = () => {
+	const routeResults = useRoutes(routes);
+	const location = useLocation();
+	const [match] =
+		matchRoutes(routes, location.pathname, '/representative') ?? [];
 
 	return (
 		<>
-			<Sidebar
-				{...props}
-				routes={routes.filter(
-					(route) => route.layout === '/representative'
-				)}
-				logo={{
-					innerLink: '/representative/index',
-					imgSrc: require('../assets/img/brand/logo-1.png').default,
-					imgAlt: 'Project Aid Hub logo',
-				}}
-			/>
+			<Sidebar routes={routes} indexLink='/representative' />
 			<div className='main-content'>
-				<DashboardNavbar
-					{...props}
-					brandText={getBrandText(props.location.pathname)}
-				/>
-				<Switch>
-					{getRoutes(routes)}
-					<Redirect from='*' to='/representative/index' />
-				</Switch>
+				<DashboardNavbar brandText={match?.route.name || 'Dashboard'} />
+				{routeResults || <Navigate to='profile' replace />}
 				<Container fluid>
 					<DashboardFooter />
 				</Container>

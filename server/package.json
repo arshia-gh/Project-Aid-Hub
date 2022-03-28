@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "seed": "node src/seed.js",
-    "dev-start": "nodemon src/app.js",
+    "dev-start": "npx nodemon src/app.js",
     "start": "node src/app.js"
   },
   "author": "Arshia Gholami",

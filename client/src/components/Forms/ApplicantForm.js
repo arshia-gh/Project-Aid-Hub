@@ -1,238 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import schema from 'schemas/applicantSchema';
 
-import { useForm, Controller } from 'react-hook-form';
+import { Formik, Form } from 'formik';
+import axios, { parseError } from 'api/axios';
 
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { Form as FormBS, FormGroup } from 'reactstrap';
+import Field from 'components/UI/Form/Field';
+import { useAlerts } from 'hooks';
+import FormFooter from 'components/Footers/FormFooter';
 
-import axios from 'api/axios';
+const ApplicantForm = ({ organization, onSuccess }) => {
+	const { addAlert } = useAlerts();
 
-import { Button, FormText, FormGroup, Form, Input, Row, Col } from 'reactstrap';
-import useAlert from 'hooks/useAlert';
-
-const schema = yup.object().shape({
-	fullname: yup
-		.string()
-		.matches(/^[a-zA-Z ]+$/, 'Fullname contains invalid characters')
-		.min(3)
-		.max(50)
-		.required('Fullname is required'),
-	IDno: yup
-		.string()
-		.matches(/^[0-9]+$/, 'ID number format is invalid')
-		.length(12)
-		.required('ID number is required'),
-	householdIncome: yup
-		.number()
-		.positive()
-		.required('Household income is required'),
-	address: yup.string().max(255).required('Address is required'),
-});
-
-const ApplicantForm = ({ organizations = [], onSuccessRegister }) => {
-	const [selectedOrganization, setSelectedOrganization] = useState();
-
-	const onSelectOrganization = (e) => {
-		const selectedIdx = organizations.findIndex(
-			({ id }) => id === parseInt(e.target.value)
-		);
-		setSelectedOrganization(organizations[selectedIdx]);
-	};
-
-	useEffect(() => {
-		setSelectedOrganization(organizations[0]);
-	}, [organizations]);
-
-	const { error: alertError } = useAlert();
-
-	const {
-		handleSubmit,
-		formState: { errors },
-		control,
-		setError,
-	} = useForm({
-		defaultValues: {
-			fullname: '',
-			IDno: '',
-			householdIncome: 0,
-			address: '',
-		},
-		resolver: yupResolver(schema),
-	});
-
-	const submitHandler = (data) => {
-		axios
-			.post(`/organizations/${selectedOrganization.id}/applicants`, {
-				fullname: data.fullname,
-				IDno: data.IDno,
-				householdIncome: data.householdIncome,
-				address: data.address,
-			})
-			.then((response) => {
-				onSuccessRegister(response.data);
-			})
-			.catch((err) => {
-				console.log(err.response);
-				if (err.response) {
-					const { error, code } = err.response.data;
-					if (code === 400 && error.fields) {
-						for (const key in error.fields) {
-							setError(key, {
-								message: error.fields[key] + ' is not unique',
-							});
-						}
-					}
-					alertError('Registration failed', error.message);
+	const submitHandler = async (values, { setErrors }) => {
+		const castValues = schema.cast(values);
+		try {
+			const response = await axios.post(
+				`/organizations/${organization.id}/applicants`,
+				{
+					fullname: castValues.fullname,
+					IDno: castValues.IDno,
+					householdIncome: values.householdIncome,
+					address: values.address,
 				}
-			});
+			);
+
+			onSuccess(response.data);
+		} catch (err) {
+			if (err.response?.data.error && err.response?.data.code) {
+				const { message, fields } = parseError(err.response.data);
+				setErrors(fields);
+				addAlert({
+					title: 'Registration failed',
+					message,
+					mode: 'danger',
+				});
+			}
+		}
 	};
 
 	return (
-		<Form onSubmit={handleSubmit(submitHandler)}>
-			<p className='heading-small text-muted mb-4 h6'>
-				Organization Information
-			</p>
-			<FormGroup>
-				<label htmlFor='input-organization-name'>
-					Organization Name
-				</label>
-				<Input
-					type='select'
-					required
-					id='input-organization-name'
-					onChange={(e) => onSelectOrganization(e)}
-					disabled={organizations.length === 1}>
-					{organizations.map((org, key) => (
-						<option value={org.id} key={key}>
-							{org.name}
-						</option>
-					))}
-				</Input>
-			</FormGroup>
-			<FormGroup>
-				<label htmlFor='input-organization-address'>
-					Organization Address
-				</label>
-				<Input
-					type='textarea'
-					row={4}
-					id='input-organization-address'
-					value={selectedOrganization?.address || ''}
-					disabled></Input>
-			</FormGroup>
-
-			<p className='heading-small text-muted mb-4 h6'>
-				Personal Information
-			</p>
-			<Row>
-				<Col sm='12'>
+		<Formik
+			onSubmit={submitHandler}
+			initialValues={{
+				fullname: '',
+				householdIncome: '',
+				IDno: '',
+				address: '',
+			}}
+			validateOnMount
+			validationSchema={schema}>
+			{({ isSubmitting, resetForm }) => (
+				<FormBS tag={Form}>
+					<p className='heading-small text-muted mb-4 h6'>
+						Personal Information
+					</p>
 					<FormGroup>
-						<label
-							className='form-control-label'
-							htmlFor='input-fullname'>
-							Fullname
-						</label>
-						<Controller
-							name='fullname'
-							control={control}
-							render={({ field }) => (
-								<Input
-									className='form-control-alternative'
-									id='input-fullname'
-									placeholder='Fullname'
-									type='text'
-									{...field}
-								/>
-							)}
-						/>
-						<FormText className='text-red'>
-							{errors.fullname?.message}
-						</FormText>
+						<Field label='Full name' name='fullname' type='text' />
 					</FormGroup>
-				</Col>
-				<Col sm='12'>
 					<FormGroup>
-						<label
-							className='form-control-label'
-							htmlFor='input-IDno'>
-							ID Number
-						</label>
-						<Controller
-							name='IDno'
-							control={control}
-							render={({ field }) => (
-								<Input
-									className='form-control-alternative'
-									placeholder='ID Number'
-									id='input-IDno'
-									type='text'
-									{...field}
-								/>
-							)}
-						/>
-						<FormText className='text-red'>
-							{errors.IDno?.message}
-						</FormText>
+						<Field label='ID number' name='IDno' type='text' />
 					</FormGroup>
-				</Col>
-				<Col sm='12'>
 					<FormGroup>
-						<label
-							className='form-control-label'
-							htmlFor='input-householdIncome'>
-							Household Income
-						</label>
-						<Controller
+						<Field
+							label='Household Income'
 							name='householdIncome'
-							control={control}
-							render={({ field }) => (
-								<Input
-									className='form-control-alternative'
-									placeholder='Household Income'
-									id='input-householdIncome'
-									type='number'
-									{...field}
-								/>
-							)}
+							type='text'
+							prepend='RM'
+							formNoValidate
 						/>
-						<FormText className='text-red'>
-							{errors.householdIncome?.message}
-						</FormText>
 					</FormGroup>
-				</Col>
-				<Col sm='12'>
 					<FormGroup>
-						<label
-							className='form-control-label'
-							htmlFor='input-address'>
-							Address
-						</label>
-						<Controller
-							name='address'
-							control={control}
-							render={({ field }) => (
-								<Input
-									className='form-control-alternative'
-									placeholder='Address'
-									id='input-address'
-									row={4}
-									type='textarea'
-									{...field}
-								/>
-							)}
-						/>
-						<FormText className='text-red'>
-							{errors.address?.message}
-						</FormText>
+						<Field label='Address' name='address' type='textarea' />
 					</FormGroup>
-				</Col>
-			</Row>
-			<div className='text-center'>
-				<Button className='mt-4' color='primary' type='submit'>
-					Register
-				</Button>
-			</div>
-		</Form>
+
+					<hr className='my-4' />
+
+					<FormFooter
+						isSubmitting={isSubmitting}
+						onReset={resetForm}
+					/>
+				</FormBS>
+			)}
+		</Formik>
 	);
 };
 

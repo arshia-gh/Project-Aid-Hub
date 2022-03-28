@@ -3,22 +3,19 @@ import { useState, useEffect } from 'react';
 import axios from 'api/axios';
 
 // reactstrap components
-import { Card, Col, Container, Row, CardHeader, CardBody } from 'reactstrap';
+import { Card, Container, CardHeader, CardBody } from 'reactstrap';
 
-import Alert from 'components/UI/Alert';
-
-import { useParams } from 'react-router-dom';
 import RepresentativeForm from 'components/Forms/RepresentativeForm';
-import useAlert from 'hooks/useAlert';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import OrgHeader from 'components/Headers/OrganizationHeader';
+import { useAlerts } from 'hooks';
 
-const AddRepresentative = (props) => {
+const AddRepresentative = () => {
 	const params = useParams();
 	const [organization, setOrganization] = useState({});
+	const { addAlert } = useAlerts();
 
-	const { error, success } = useAlert();
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		let isMounted = true;
@@ -35,7 +32,14 @@ const AddRepresentative = (props) => {
 
 				isMounted && setOrganization(response.data.result);
 			} catch (err) {
-				console.error(err);
+				if (err.response) {
+					const { error, code } = err.response.data;
+					addAlert({
+						title: `An ${code} error occurred`,
+						message: error.message,
+						mode: 'danger',
+					});
+				}
 			}
 		};
 
@@ -45,34 +49,25 @@ const AddRepresentative = (props) => {
 			isMounted = false;
 			controller.abort();
 		};
-	}, [params.id]);
+	}, [params, addAlert]);
 
-	const onSuccessRegister = (data) => {
-		if (data.error) {
-			error(`Error ${data.code}`, `Error ${data.message}`);
-		} else {
-			success('Success', 'Representative was successfully created');
-			history.push(`/admin/organizations/${organization.id}`);
-		}
+	const onSuccess = () => {
+		// success('Success', 'Representative was successfully created');
+		navigate(`../organizations/${params.id}`, { replace: true });
 	};
 
 	return (
 		<>
 			<OrgHeader organization={organization} />
 			<Container className='mt--7' fluid>
-				<Alert />
 				<Card className='bg-secondary shadow'>
 					<CardHeader className='bg-white border-0'>
-						<Row className='align-items-center'>
-							<Col xs='8'>
-								<h3 className='mb-0'>Add New Representative</h3>
-							</Col>
-						</Row>
+						<h3 className='mb-0'>Add New Representative</h3>
 					</CardHeader>
 					<CardBody>
 						<RepresentativeForm
 							organization={organization}
-							onSuccessRegister={onSuccessRegister}
+							onSuccess={onSuccess}
 						/>
 					</CardBody>
 				</Card>

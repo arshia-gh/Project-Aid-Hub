@@ -6,47 +6,45 @@ import axios from 'api/axios';
 import {
 	Button,
 	Card,
+	CardFooter,
 	CardHeader,
 	Container,
 	Row,
 	Badge,
-	CardFooter,
+	UncontrolledAlert,
 } from 'reactstrap';
 
 import OrgHeader from 'components/Headers/OrganizationHeader';
-import { useParams, Link } from 'react-router-dom';
-import ReturnButton from 'components/UI/ReturnButton';
+import { Link } from 'react-router-dom';
+import useAuth from 'hooks/useAuth';
 import Table from 'components/UI/Table';
 import { useAlerts } from 'hooks';
 
-const ViewOrganization = (props) => {
-	const [representatives, setRepresentatives] = useState([]);
-	const [organization, setOrganization] = useState({});
+const ViewApplicants = () => {
+	const { auth } = useAuth();
 	const { addAlert } = useAlerts();
 
-	const params = useParams();
+	const [applicants, setApplicants] = useState([]);
+	const [organization, setOrganization] = useState({});
 
 	useEffect(() => {
 		let isMounted = true;
 		const controller = new AbortController();
 
-		const getRepresentatives = async () => {
+		const getApplicants = async () => {
 			try {
-				const response = await axios.get(
-					`/organizations/${params.id}/representatives`,
-					{
-						signal: controller.signal,
-					}
-				);
 				const orgResponse = await axios.get(
-					`/organizations/${params.id}`,
+					`/organizations/${auth.user.orgId}`
+				);
+				const response = await axios.get(
+					`/organizations/${auth.user.orgId}/applicants`,
 					{
 						signal: controller.signal,
 					}
 				);
 
+				isMounted && setApplicants(response.data.result);
 				isMounted && setOrganization(orgResponse.data.result);
-				isMounted && setRepresentatives(response.data.result);
 			} catch (err) {
 				if (err.response) {
 					const { error, code } = err.response.data;
@@ -59,18 +57,29 @@ const ViewOrganization = (props) => {
 			}
 		};
 
-		getRepresentatives();
+		getApplicants();
 
 		return () => {
 			isMounted = false;
 			controller.abort();
 		};
-	}, [params, addAlert]);
+	}, [auth, addAlert]);
 
 	return (
 		<>
 			<OrgHeader organization={organization} />
 			<Container className='mt--7' fluid>
+				{auth.newApplicant && (
+					<UncontrolledAlert color='primary' fade={false}>
+						<span className='alert-inner--text'>
+							<strong>New Applicant Info</strong>
+							<br />
+							Username: {auth.newApplicant.username}
+							<br />
+							Password: {auth.newApplicant.password}
+						</span>
+					</UncontrolledAlert>
+				)}
 				<Row>
 					<div className='col'>
 						<Card className='shadow'>
@@ -78,40 +87,40 @@ const ViewOrganization = (props) => {
 								<Row className='align-items-center'>
 									<div className='col'>
 										<h3 className='mb-0'>
-											List of Representatives
+											List of Applicants
 										</h3>
-										{representatives.length === 0 && (
-											<Badge color='info'>
-												No representative was found
-											</Badge>
-										)}
 									</div>
 									<div className='col text-right'>
-										<Button
-											tag={Link}
-											to='new-representative'
-											color='primary'
-											size='sm'>
-											Add Representative
-										</Button>
+										<Link
+											to={
+												'/representative/new-applicant'
+											}>
+											<Button color='primary' size='sm'>
+												Add Applicant
+											</Button>
+										</Link>
 									</div>
 								</Row>
 							</CardHeader>
 							<Table
-								data={representatives}
+								data={applicants}
 								headers={{
 									username: 'Username',
 									fullname: 'Full Name',
-									jobTitle: 'Job Title',
-									email: 'Email Address',
-									mobileNo: 'HP Number',
+									IDno: 'ID Number',
+									householdIncome: 'Household Income',
+									address: 'Address',
 								}}
 								rowKey='username'
+								hoverable
 							/>
-							<hr className='m-0' />
-							<CardFooter className='border-0 bg-secondary'>
-								<ReturnButton />
-							</CardFooter>
+							{applicants.length === 0 && (
+								<CardFooter>
+									<Badge color='info'>
+										No applicant was found
+									</Badge>
+								</CardFooter>
+							)}
 						</Card>
 					</div>
 				</Row>
@@ -120,4 +129,4 @@ const ViewOrganization = (props) => {
 	);
 };
 
-export default ViewOrganization;
+export default ViewApplicants;

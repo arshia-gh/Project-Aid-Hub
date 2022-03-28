@@ -74,26 +74,10 @@ const Profile = () => {
 										</Col>
 									</Row>
 									<Row>
-										<Col lg='4'>
+										<Col lg='6'>
 											<FormGroup>
 												<label className='form-control-label'>
-													Password
-												</label>
-												<Input
-													className='form-control-alternative'
-													value={
-														auth.user.password ||
-														'not availabled'
-													}
-													readOnly
-													type='text'
-												/>
-											</FormGroup>
-										</Col>
-										<Col lg='4'>
-											<FormGroup>
-												<label className='form-control-label'>
-													Fullname
+													Full Name
 												</label>
 												<Input
 													className='form-control-alternative'
@@ -103,10 +87,10 @@ const Profile = () => {
 												/>
 											</FormGroup>
 										</Col>
-										<Col lg='4'>
+										<Col lg='6'>
 											<FormGroup>
 												<label className='form-control-label'>
-													ID number
+													ID Number
 												</label>
 												<Input
 													className='form-control-alternative'
@@ -125,6 +109,38 @@ const Profile = () => {
 								</h6>
 								<div className='pl-lg-4'>
 									<Row>
+										<Col lg='6'>
+											<FormGroup>
+												<label className='form-control-label'>
+													Email address
+												</label>
+												<Input
+													className='form-control-alternative'
+													value={
+														auth.user.email ??
+														'Not Available'
+													}
+													readOnly
+													type='text'
+												/>
+											</FormGroup>
+										</Col>
+										<Col lg='6'>
+											<FormGroup>
+												<label className='form-control-label'>
+													Mobile Number
+												</label>
+												<Input
+													className='form-control-alternative'
+													value={
+														auth.user.mobileNo ??
+														'Not Available'
+													}
+													readOnly
+													type='text'
+												/>
+											</FormGroup>
+										</Col>
 										<Col md='12'>
 											<FormGroup>
 												<label className='form-control-label'>
@@ -133,7 +149,7 @@ const Profile = () => {
 												<Input
 													className='form-control-alternative'
 													value={auth.user.address}
-													type='text'
+													type='textarea'
 													readOnly
 												/>
 											</FormGroup>

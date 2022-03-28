@@ -7,6 +7,10 @@ export default User.keys({
 		.length(12)
 		.required(),
 
-	householdIncome: Joi.number().positive().required(),
+	householdIncome: Joi.number().min(0).required(),
 	address: Joi.string().max(255).required(),
+	email: User.extract('email').when('mobileNo', {
+		is: Joi.exist(),
+		then: Joi.required(),
+	}),
 });

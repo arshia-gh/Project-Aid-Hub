@@ -1,5 +1,5 @@
 import useAuth from 'hooks/useAuth';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // reactstrap components
 import {
 	DropdownMenu,
@@ -14,6 +14,8 @@ import {
 
 const DashboardNavbar = (props) => {
 	const { auth, setAuth } = useAuth();
+	const navigate = useNavigate();
+
 	return (
 		<>
 			<Navbar
@@ -54,13 +56,10 @@ const DashboardNavbar = (props) => {
 									</h6>
 								</DropdownItem>
 								<DropdownItem
-									to='/admin/user-profile'
-									tag={Link}>
-									<i className='ni ni-single-02' />
-									<span>My profile</span>
-								</DropdownItem>
-								<DropdownItem divider />
-								<DropdownItem onClick={() => setAuth(null)}>
+									onClick={() => {
+										navigate('/login/user');
+										setAuth(null);
+									}}>
 									<i className='ni ni-user-run' />
 									<span>Logout</span>
 								</DropdownItem>

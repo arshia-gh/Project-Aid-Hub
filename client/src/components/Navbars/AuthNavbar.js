@@ -12,7 +12,7 @@ import {
 	Col,
 } from 'reactstrap';
 
-const AdminNavbar = () => {
+const AuthNavbar = () => {
 	return (
 		<>
 			<Navbar
@@ -63,7 +63,7 @@ const AdminNavbar = () => {
 							<NavItem>
 								<NavLink
 									className='nav-link-icon'
-									to='/auth/register'
+									to='register'
 									tag={Link}>
 									<i className='ni ni-circle-08' />
 									<span className='nav-link-inner--text'>
@@ -74,7 +74,7 @@ const AdminNavbar = () => {
 							<NavItem>
 								<NavLink
 									className='nav-link-icon'
-									to='/auth/login'
+									to='login/user'
 									tag={Link}>
 									<i className='ni ni-key-25' />
 									<span className='nav-link-inner--text'>
@@ -90,4 +90,4 @@ const AdminNavbar = () => {
 	);
 };
 
-export default AdminNavbar;
+export default AuthNavbar;

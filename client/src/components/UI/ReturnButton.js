@@ -1,14 +1,16 @@
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
-const ReturnButton = () => {
-	const history = useHistory();
+const ReturnButton = (props) => {
+	const navigate = useNavigate();
+
 	return (
 		<Button
-			color='warning'
-			size='sm'
+			onClick={() => navigate(-1)}
 			type='button'
-			onClick={() => history.goBack()}>
+			size='sm'
+			color='warning'
+			{...props}>
 			<i className='fas fa-arrow-circle-left'></i> RETURN
 		</Button>
 	);

@@ -1,89 +1,55 @@
 import React from 'react';
-
-import { useForm, Controller } from 'react-hook-form';
-
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-
-import axios from 'api/axios';
+import * as Yup from 'yup';
+import { Formik, Form } from 'formik';
 
 // reactstrap components
-import {
-	Button,
-	FormGroup,
-	FormText,
-	Form,
-	Input,
-	InputGroupAddon,
-	InputGroupText,
-	InputGroup,
-} from 'reactstrap';
-import { useContext } from 'react';
-import { AlertContext } from 'contexts/AlertProvider';
+import { Form as FormBS, FormGroup } from 'reactstrap';
+import Field from 'components/UI/Form/Field';
+import SubmitButton from 'components/UI/Form/SubmitButton';
 
-const schema = yup.object().shape({
-	token: yup.string().required('token is required'),
+const schema = Yup.object().shape({
+	token: Yup.string().required('Required'),
 });
 
-const AdminLoginForm = ({ onSuccessAuth }) => {
-	const { error: alertError } = useContext(AlertContext);
-
-	const {
-		handleSubmit,
-		formState: { errors },
-		control,
-		reset,
-	} = useForm({
-		defaultValues: { token: '' },
-		resolver: yupResolver(schema),
-	});
-
-	const submitHandler = async (data) => {
-		try {
-			const response = await axios.post('/admin-login', {
-				token: data.token,
-			});
-			onSuccessAuth(response.data);
-		} catch (err) {
-			const { error } = err.response.data;
-			alertError('Authentication failed', error.message);
-			reset();
+const AdminLoginForm = ({ authHandler }) => {
+	const submitHandler = async (values, { resetForm, setSubmitting }) => {
+		const error = await authHandler(values);
+		if (error) {
+			resetForm();
 		}
 	};
 
 	return (
-		<Form onSubmit={handleSubmit(submitHandler)}>
-			<p className='small text-muted'>
-				Please use your admin token to login
-			</p>
-			<FormGroup>
-				<InputGroup className='input-group-alternative'>
-					<InputGroupAddon addonType='prepend'>
-						<InputGroupText>
-							<i className='ni ni-lock-circle-open' />
-						</InputGroupText>
-					</InputGroupAddon>
-					<Controller
-						name='token'
-						control={control}
-						render={({ field }) => (
-							<Input
-								placeholder='Token'
-								type='password'
-								autoComplete='off'
-								{...field}
-							/>
-						)}
-					/>
-				</InputGroup>
-				<FormText className='text-red'>
-					{errors.token?.message}
-				</FormText>
-			</FormGroup>
-			<Button color='primary' type='submit' className='w-100'>
-				Sign in
-			</Button>
-		</Form>
+		<Formik
+			initialValues={{ token: '' }}
+			validationSchema={schema}
+			validateOnMount
+			onSubmit={submitHandler}>
+			{({ isSubmitting }) => (
+				<FormBS tag={Form}>
+					<p className='small text-muted'>
+						Please use your admin token to login
+					</p>
+					<FormGroup>
+						<Field
+							prepend={<i className='ni ni-lock-circle-open' />}
+							name='token'
+							placeholder='Token'
+							type='password'
+							autoComplete='off'
+						/>
+					</FormGroup>
+					<SubmitButton
+						isSubmitting={isSubmitting}
+						color='primary'
+						type='submit'
+						onLoadText='Loading...'
+						className='w-100'>
+						Login
+					</SubmitButton>
+				</FormBS>
+			)}
+		</Formik>
 	);
 };
 

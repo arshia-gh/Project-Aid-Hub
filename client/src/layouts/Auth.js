@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 // reactstrap components
 import { Container, Row, Col } from 'reactstrap';
 
@@ -7,12 +7,26 @@ import { Container, Row, Col } from 'reactstrap';
 import AuthNavbar from 'components/Navbars/AuthNavbar.js';
 import AuthFooter from 'components/Footers/AuthFooter.js';
 
-import routes from 'routes.js';
-import useAuth from 'hooks/useAuth';
+import Register from 'views/auth/Register';
+import Login from 'layouts/Login';
 
-const AuthLayout = (props) => {
+const routes = [
+	{
+		path: 'login/*',
+		name: 'Login',
+		element: <Login />,
+	},
+	{
+		path: 'register',
+		name: 'Register',
+		element: <Register />,
+	},
+	{},
+];
+
+const AuthLayout = () => {
 	const mainContent = React.useRef(null);
-	const { auth } = useAuth();
+	const routeResults = useRoutes(routes);
 
 	React.useEffect(() => {
 		document.body.classList.add('bg-default');
@@ -20,36 +34,6 @@ const AuthLayout = (props) => {
 			document.body.classList.remove('bg-default');
 		};
 	}, []);
-
-	const getRoutes = (routes) => {
-		return routes.map((prop, key) => {
-			if (prop.layout === '/auth') {
-				return (
-					<Route
-						path={prop.layout + prop.path}
-						component={prop.component}
-						key={key}
-					/>
-				);
-			} else {
-				return null;
-			}
-		});
-	};
-
-	if (auth != null) {
-		return (
-			<Redirect
-				to={
-					auth.role === 'ADMIN'
-						? '/admin'
-						: auth.role === 'ORG_REPRESENTATIVE'
-						? '/representative'
-						: '/applicant'
-				}
-			/>
-		);
-	}
 
 	return (
 		<>
@@ -75,10 +59,7 @@ const AuthLayout = (props) => {
 				{/* Page content */}
 				<Container className='mt--8 pb-5'>
 					<Row className='justify-content-center'>
-						<Switch>
-							{getRoutes(routes)}
-							<Redirect from='*' to='/auth/login' />
-						</Switch>
+						{routeResults || <Navigate to='login/user' replace />}
 					</Row>
 				</Container>
 			</div>

@@ -1,16 +1,16 @@
 // reactstrap components
-import ApplicantForm from 'components/Forms/ApplicantForm';
 import { Card, CardBody, Col, Badge } from 'reactstrap';
+
 import { useEffect, useState } from 'react';
 import axios from 'api/axios';
-import useAlert from 'hooks/useAlert';
-import useAuth from 'hooks/useAuth';
-import Alert from 'components/UI/Alert';
+import { useNavigate } from 'react-router-dom';
+import { useAlerts } from 'hooks';
+import SFApplicantForm from 'components/Forms/SFApplicantForm';
 
 const Register = () => {
 	const [organizations, setOrganizations] = useState([]);
-	const { error: alertError } = useAlert();
-	const { setAuth } = useAuth();
+	const navigate = useNavigate();
+	const { addAlert } = useAlerts();
 
 	useEffect(() => {
 		let isMounted = true;
@@ -26,7 +26,11 @@ const Register = () => {
 			} catch (err) {
 				if (err.response) {
 					const { error, code } = err.response.data;
-					alertError(`An ${code} error occurred`, error.message);
+					addAlert({
+						title: `An ${code} error occurred`,
+						message: error.message,
+						mode: 'danger',
+					});
 				}
 			}
 		};
@@ -37,13 +41,15 @@ const Register = () => {
 			isMounted = false;
 			controller.abort();
 		};
-	}, [alertError]);
+	}, [addAlert]);
 
-	const onSuccessRegister = (data) => {
-		setAuth({
-			user: data.result,
-			role: data.result.userType,
+	const redirectApplicant = () => {
+		addAlert({
+			title: 'Registration Successful',
+			message: 'your login credentials will be sent to your email',
+			mode: 'success',
 		});
+		navigate('/login/user');
 	};
 
 	return (
@@ -51,15 +57,14 @@ const Register = () => {
 			<Col lg='6' md='8'>
 				<Card className='bg-secondary shadow border-0'>
 					<CardBody className='px-lg-5 py-lg-5'>
-						<Alert />
 						{organizations.length === 0 ? (
 							<Badge color='warning'>
 								No organization was found
 							</Badge>
 						) : (
-							<ApplicantForm
+							<SFApplicantForm
 								organizations={organizations}
-								onSuccessRegister={onSuccessRegister}
+								onSuccess={redirectApplicant}
 							/>
 						)}
 					</CardBody>

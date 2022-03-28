@@ -7,10 +7,16 @@ import {
 	getOrganizations,
 } from '../controllers/organization-controller.js';
 
-import OrganizationSchema from '../schemas/organization-schema.js';
+import {
+	getApplicants,
+	createApplicant,
+	createOrgRepresentative,
+	getOrgRepresentatives,
+} from '../controllers/user-controller.js';
 
-import representativeRouter from './representative-routes.js';
-import applicantRouter from './applicant-routes.js';
+import ApplicantSchema from '../schemas/applicant-schema.js';
+import OrgRepresentative from '../schemas/representative-schema.js';
+import OrganizationSchema from '../schemas/organization-schema.js';
 
 const router = express.Router();
 
@@ -52,7 +58,61 @@ router.post(
 	})
 );
 
-router.use('/:orgId/representatives', representativeRouter);
-router.use('/:orgId/applicants', applicantRouter);
+router.get(
+	'/:orgId/applicants',
+	promisify(async (req, res) => {
+		const { orgId } = req.params;
+		const applicants = await getApplicants(orgId);
+
+		res.status(200).json({
+			result: applicants,
+			code: 200,
+		});
+	})
+);
+
+router.post(
+	'/:orgId/applicants',
+	validator.body(ApplicantSchema),
+	promisify(async (req, res) => {
+		const { orgId } = req.params;
+		const createdApplicant = await createApplicant(req.body, orgId);
+
+		res.status(200).json({
+			result: createdApplicant,
+			code: 200,
+		});
+	})
+);
+
+router.get(
+	'/:orgId/representatives',
+	promisify(async (req, res) => {
+		const { orgId } = req.params;
+		const representatives = await getOrgRepresentatives(orgId);
+
+		res.status(200).json({
+			result: representatives,
+			code: 200,
+		});
+	})
+);
+
+router.post(
+	'/:orgId/representatives',
+	validator.body(OrgRepresentative),
+	promisify(async (req, res) => {
+		const { orgId } = req.params;
+		const createdOrgRepresentative = await createOrgRepresentative(
+			req.body,
+			orgId
+		);
+
+		res.status(200).json({
+			result: createdOrgRepresentative,
+			code: 200,
+		});
+	})
+);
 
 export default router;

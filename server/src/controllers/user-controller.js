@@ -80,6 +80,10 @@ export async function createApplicant(applicant, orgId) {
 			}
 		);
 
+		if (applicant.email != null) {
+			await sendCredentials({ password, username }, applicant.email);
+		}
+
 		return { ...toSafeUser(createdApplicant), password };
 	});
 }

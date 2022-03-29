@@ -1,4 +1,5 @@
 import Appeal from '../models/Appeal.js';
+import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
 import { findOrganizationByPk } from './organization-controller.js';
 
@@ -31,4 +32,11 @@ export async function findAppealByPk(appealId, transaction) {
 
 export async function getAppealById(appealId) {
 	return findAppealByPk(appealId);
+}
+
+export async function updateAppealOutcome(appealId, newOutcomes) {
+	return sequelize.transaction(async (t) => {
+		const foundAppeal = await findAppealByPk(appealId, t);
+		return foundAppeal.update({ outcome: newOutcomes }, { transaction: t });
+	});
 }

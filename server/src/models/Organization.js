@@ -1,5 +1,6 @@
 import { DataTypes, Model } from '@sequelize/core';
 import sequelize from '../sequelize.js';
+import Appeal from './Appeal.js';
 import User from './User.js';
 
 class Organization extends Model {}
@@ -42,4 +43,11 @@ Organization.hasMany(User, {
 });
 
 User.belongsTo(Organization, { foreignKey: 'orgId' });
+
+Organization.hasMany(Appeal, {
+	foreignKey: 'orgId',
+});
+
+Appeal.belongsTo(Organization, { foreignKey: 'orgId' });
+
 export default Organization;

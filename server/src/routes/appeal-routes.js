@@ -1,5 +1,10 @@
 import express from 'express';
-import { getAppealById, getAppeals } from '../controllers/appeal-controller.js';
+import Joi from 'joi';
+import {
+	getAppealById,
+	getAppeals,
+	updateAppealOutcome,
+} from '../controllers/appeal-controller.js';
 import {
 	getAllGoods,
 	getCashDonations,
@@ -105,6 +110,15 @@ router.get(
 			result: contributions,
 			code: 200,
 		});
+	})
+);
+
+router.patch(
+	'/:appealId/end',
+	promisify(async (req, res) => {
+		const { appealId } = req.params;
+		const updatedAppeal = await updateAppealOutcome(appealId, 'ended');
+		res.status(200).json(updatedAppeal);
 	})
 );
 

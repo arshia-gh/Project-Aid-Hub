@@ -1,7 +1,6 @@
 import { DataTypes, Model, QueryTypes } from '@sequelize/core';
 import sequelize from '../sequelize.js';
-
-// import Document from './Document.js';
+import Document from './Document.js';
 
 class User extends Model {}
 
@@ -65,8 +64,8 @@ User.init(
 	{ sequelize }
 );
 
-// User.hasMany(Document, { foreignKey: 'userId' });
-// Document.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Document, { foreignKey: 'userId' });
+Document.belongsTo(User, { foreignKey: 'userId' });
 
 export async function getNextUserId(transaction) {
 	return (

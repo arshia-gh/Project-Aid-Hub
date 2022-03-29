@@ -24,4 +24,12 @@ GET  - /organizations/:id/appeals
 POST - /organizations/:id/appeals
 GET  - /appeals
 GET  - /appeals/:id
+
+Contributions
+--------------------
+GET  - /appeals/:id/goods
+POST - /appeals/:id/goods
+GET  - /appeals/:id/cash-donations
+POST - /appeals/:id/cash-donations
+GET  - /appeals/:id/contributions
 ```

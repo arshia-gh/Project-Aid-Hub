@@ -51,7 +51,7 @@ User.init(
 		},
 
 		jobTitle: {
-			type: DataTypes.STRING(50),
+			type: DataTypes.STRING,
 		},
 
 		// discriminator field

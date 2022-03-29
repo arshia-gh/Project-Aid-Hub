@@ -15,7 +15,7 @@ import {
 } from './middleware/error-handlers.js';
 
 import sequelize from './sequelize.js';
-sequelize.sync({ alter: true });
+sequelize.sync({});
 
 import { getLoggerInstance } from './utils/logger.js';
 const logger = getLoggerInstance(import.meta.url);
@@ -25,6 +25,7 @@ const sv_host = process.env.SV_HOST || 'localhost';
 const sv_port = process.env.SV_PORT || 8080;
 const api_prefix = process.env.API_PREFIX || 'api';
 
+app.set('json replacer', (k, v) => (v === null ? undefined : v));
 app.use(pino({ logger }));
 app.use(
 	`/${api_prefix}`,

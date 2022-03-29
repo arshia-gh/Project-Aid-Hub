@@ -14,9 +14,15 @@ import {
 	getOrgRepresentatives,
 } from '../controllers/user-controller.js';
 
+import {
+	organizeAppeal,
+	getOrganizationAppeals,
+} from '../controllers/appeal-controller.js';
+
 import ApplicantSchema from '../schemas/applicant-schema.js';
 import OrgRepresentative from '../schemas/representative-schema.js';
 import OrganizationSchema from '../schemas/organization-schema.js';
+import appealSchema from '../schemas/appeal-schema.js';
 
 const router = express.Router();
 
@@ -110,6 +116,33 @@ router.post(
 
 		res.status(200).json({
 			result: createdOrgRepresentative,
+			code: 200,
+		});
+	})
+);
+
+router.get(
+	'/:orgId/appeals',
+	promisify(async (req, res) => {
+		const { orgId } = req.params;
+		const appeals = await getOrganizationAppeals(orgId);
+
+		res.status(200).json({
+			result: appeals,
+			code: 200,
+		});
+	})
+);
+
+router.post(
+	'/:orgId/appeals',
+	validator.body(appealSchema),
+	promisify(async (req, res) => {
+		const { orgId } = req.params;
+		const createdAppeal = await organizeAppeal(req.body, orgId);
+
+		res.status(200).json({
+			result: createdAppeal,
 			code: 200,
 		});
 	})

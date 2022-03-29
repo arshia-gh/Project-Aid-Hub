@@ -5,6 +5,7 @@ import cors from 'cors';
 
 // routes
 import orgRoutes from './routes/organization-routes.js';
+import appealRoutes from './routes/appeal-routes.js';
 import apiRoutes from './routes/api-routes.js';
 
 import {
@@ -14,7 +15,7 @@ import {
 } from './middleware/error-handlers.js';
 
 import sequelize from './sequelize.js';
-sequelize.sync();
+sequelize.sync({ alter: true });
 
 import { getLoggerInstance } from './utils/logger.js';
 const logger = getLoggerInstance(import.meta.url);
@@ -36,6 +37,7 @@ app.use(`/${api_prefix}`, express.urlencoded({ extended: true }));
 
 app.use(`/${api_prefix}`, apiRoutes);
 app.use(`/${api_prefix}/organizations`, orgRoutes);
+app.use(`/${api_prefix}/appeals`, appealRoutes);
 
 app.use(validationErrorHandler);
 app.use(databaseErrorHandler);

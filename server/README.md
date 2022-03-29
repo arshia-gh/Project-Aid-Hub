@@ -23,4 +23,5 @@ Appeals
 GET  - /organizations/:id/appeals
 POST - /organizations/:id/appeals
 GET  - /appeals
+GET  - /appeals/:id
 ```

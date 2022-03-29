@@ -18,3 +18,17 @@ export async function getOrganizationAppeals(orgId) {
 export async function getAppeals() {
 	return Appeal.findAll();
 }
+
+export async function findAppealByPk(appealId, transaction) {
+	const foundAppeal = await Appeal.findByPk(appealId, { transaction });
+
+	if (foundAppeal == null) {
+		throw ApiError.notFound(`Appeal with id of ${appealId} does not exist`);
+	}
+
+	return foundAppeal;
+}
+
+export async function getAppealById(appealId) {
+	return findAppealByPk(appealId);
+}

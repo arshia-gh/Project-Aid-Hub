@@ -1,4 +1,5 @@
 import Appeal from '../models/Appeal.js';
+import Disbursement from '../models/Disbursement.js';
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
 import { findOrganizationByPk } from './organization-controller.js';
@@ -28,6 +29,16 @@ export async function findAppealByPk(appealId, transaction) {
 	}
 
 	return foundAppeal;
+}
+
+export async function getTotalDisbursedAmount(appealId, transaction) {
+	return Disbursement.sum('amount', {
+		where: {
+			appealId,
+		},
+		raw: true,
+		transaction,
+	});
 }
 
 export async function getAppealById(appealId) {

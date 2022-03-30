@@ -89,6 +89,25 @@ export async function createApplicant(applicant, orgId) {
 	});
 }
 
+export async function findApplicantByIDno(IDno, transaction) {
+	const foundApplicant = await User.findOne(
+		{
+			where: {
+				IDno,
+			},
+		},
+		{ transaction }
+	);
+
+	if (foundApplicant == null) {
+		throw ApiError.notFound(
+			`Applicant with id number of ${IDno} does not exist`
+		);
+	}
+
+	return foundApplicant;
+}
+
 export async function login(username, password) {
 	const foundUser = await User.findOne({
 		where: {

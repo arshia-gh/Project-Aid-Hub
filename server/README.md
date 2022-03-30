@@ -20,10 +20,11 @@ POST - /organizations/:id/representatives
 
 Appeals
 --------------------
-GET  - /organizations/:id/appeals
-POST - /organizations/:id/appeals
-GET  - /appeals
-GET  - /appeals/:id
+GET   - /organizations/:id/appeals
+POST  - /organizations/:id/appeals
+GET   - /appeals
+GET   - /appeals/:id
+PATCH - /appeals/:id/end
 
 Contributions
 --------------------
@@ -32,4 +33,10 @@ POST - /appeals/:id/goods
 GET  - /appeals/:id/cash-donations
 POST - /appeals/:id/cash-donations
 GET  - /appeals/:id/contributions
+
+Disbursements
+--------------------
+GET  - /appeals/:id/disbursements
+POST - /appeals/:id/disbursements
+GET  - /applicants/:id/disbursements
 ```

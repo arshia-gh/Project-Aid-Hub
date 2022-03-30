@@ -6,6 +6,7 @@ import cors from 'cors';
 // routes
 import orgRoutes from './routes/organization-routes.js';
 import appealRoutes from './routes/appeal-routes.js';
+import applicantRoutes from './routes/applicant-routes.js';
 import apiRoutes from './routes/api-routes.js';
 
 import {
@@ -39,6 +40,7 @@ app.use(`/${api_prefix}`, express.urlencoded({ extended: true }));
 app.use(`/${api_prefix}`, apiRoutes);
 app.use(`/${api_prefix}/organizations`, orgRoutes);
 app.use(`/${api_prefix}/appeals`, appealRoutes);
+app.use(`/${api_prefix}/applicants`, applicantRoutes);
 
 app.use(validationErrorHandler);
 app.use(databaseErrorHandler);

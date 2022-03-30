@@ -12,9 +12,14 @@ import {
 	recordCashDonation,
 	recordGoods,
 } from '../controllers/contribution-controller.js';
+import {
+	getAppealDisbursements,
+	recordDisbursements,
+} from '../controllers/disbursement-controller.js';
 
 import { promisify, validator } from '../middleware/utils-middleware.js';
 import cashDonationsSchema from '../schemas/cash-donations-schema.js';
+import disbursementSchema from '../schemas/disbursement-schema.js';
 import goodsSchema from '../schemas/goods-schema.js';
 
 const router = express.Router();
@@ -119,6 +124,36 @@ router.patch(
 		const { appealId } = req.params;
 		const updatedAppeal = await updateAppealOutcome(appealId, 'ended');
 		res.status(200).json(updatedAppeal);
+	})
+);
+
+router.get(
+	'/:appealId/disbursements',
+	promisify(async (req, res) => {
+		const { appealId } = req.params;
+		const disbursements = await getAppealDisbursements(appealId);
+
+		res.status(200).json({
+			result: disbursements,
+			code: 200,
+		});
+	})
+);
+
+router.post(
+	'/:appealId/disbursements',
+	validator.body(disbursementSchema),
+	promisify(async (req, res) => {
+		const { appealId } = req.params;
+		const createdDisbursement = await recordDisbursements(
+			req.body,
+			appealId
+		);
+
+		res.status(200).json({
+			result: createdDisbursement,
+			code: 200,
+		});
 	})
 );
 

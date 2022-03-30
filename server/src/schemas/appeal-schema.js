@@ -1,7 +1,14 @@
 import Joi from 'joi';
 
 export default Joi.object({
-	fromDate: Joi.date().iso().min('now').required().label('Starting date'),
+	fromDate: Joi.date()
+		.iso()
+		.min('now')
+		.required()
+		.label('Starting date')
+		.messages({
+			'date.min': 'From date must be greater or equal to current date',
+		}),
 	toDate: Joi.date()
 		.iso()
 		.greater(Joi.ref('fromDate'))

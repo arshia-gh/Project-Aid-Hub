@@ -1,3 +1,4 @@
+import { Op } from '@sequelize/core';
 import Appeal from '../models/Appeal.js';
 import Disbursement from '../models/Disbursement.js';
 import sequelize from '../sequelize.js';
@@ -17,8 +18,26 @@ export async function getOrganizationAppeals(orgId) {
 	return foundOrg.getAppeals();
 }
 
-export async function getAppeals() {
-	return Appeal.findAll();
+export async function getAppeals(show) {
+	if (show == 'current') {
+		return Appeal.findAll({
+			where: {
+				toDate: {
+					[Op.gt]: new Date().toISOString(),
+				},
+			},
+		});
+	} else if (show == 'past') {
+		return Appeal.findAll({
+			where: {
+				toDate: {
+					[Op.lte]: new Date().toISOString(),
+				},
+			},
+		});
+	} else {
+		return Appeal.findAll();
+	}
 }
 
 export async function findAppealByPk(appealId, transaction) {

@@ -27,7 +27,8 @@ const router = express.Router();
 router.get(
 	'/',
 	promisify(async (req, res) => {
-		const appeals = await getAppeals();
+		const { show } = req.query;
+		const appeals = await getAppeals(show);
 		res.status(200).json({
 			result: appeals,
 			code: 200,

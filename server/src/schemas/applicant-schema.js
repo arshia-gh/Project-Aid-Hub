@@ -3,10 +3,16 @@ import User from './user-schema.js';
 
 export default User.keys({
 	IDno: Joi.string()
-		.pattern(/^[0-9]+$/, 'ID number')
+		.trim()
+		.uppercase()
+		.pattern(/^[A-Z0-9]+$/)
 		.length(12)
 		.required(),
 
-	householdIncome: Joi.number().positive().required(),
-	address: Joi.string().max(255).required(),
+	householdIncome: Joi.number().min(0).required(),
+	address: Joi.string().trim().max(255).required(),
+	email: User.extract('email').when('mobileNo', {
+		is: Joi.exist(),
+		then: Joi.required(),
+	}),
 });

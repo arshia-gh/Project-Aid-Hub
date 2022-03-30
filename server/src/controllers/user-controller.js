@@ -11,6 +11,7 @@ import { findOrganizationByPk } from './organization-controller.js';
 
 import bcrypt from 'bcrypt';
 import { sendCredentials } from '../nodemailer.js';
+import Organization from '../models/Organization.js';
 
 const toSafeUser = (user) => {
 	return _.omitBy(_.omit(user.toJSON(), ['id', 'password']), _.isNil);
@@ -88,11 +89,31 @@ export async function createApplicant(applicant, orgId) {
 	});
 }
 
+export async function findApplicantByIDno(IDno, transaction) {
+	const foundApplicant = await User.findOne(
+		{
+			where: {
+				IDno,
+			},
+		},
+		{ transaction }
+	);
+
+	if (foundApplicant == null) {
+		throw ApiError.notFound(
+			`Applicant with id number of ${IDno} does not exist`
+		);
+	}
+
+	return foundApplicant;
+}
+
 export async function login(username, password) {
 	const foundUser = await User.findOne({
 		where: {
 			username,
 		},
+		include: [Organization],
 	});
 
 	if (foundUser == null) {

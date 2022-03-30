@@ -10,6 +10,7 @@ export default object({
 		.required('Required'),
 	email: string()
 		.trim()
+		.lowercase()
 		.email('Invalid email address format')
 		.max(255, 'Email address must be at most ${max} characters'),
 	mobileNo: string()

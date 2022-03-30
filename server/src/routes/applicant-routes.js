@@ -1,42 +1,17 @@
-/*
- * --IMPORTANT--
- * applicant router must be used with the organization router,
- * all routes require the param `orgId` to exist on the request object
- */
-
 import express from 'express';
+import { getApplicantDisbursements } from '../controllers/disbursement-controller.js';
+import { promisify } from '../middleware/utils-middleware.js';
 
-import { promisify, validator } from '../middleware/utils-middleware.js';
-import {
-	getApplicants,
-	createApplicant,
-} from '../controllers/user-controller.js';
-import ApplicantSchema from '../schemas/applicant-schema.js';
-
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
 router.get(
-	'/',
+	'/:IDno/disbursements',
 	promisify(async (req, res) => {
-		const { orgId } = req.params;
-		const applicants = await getApplicants(orgId);
+		const { IDno } = req.params;
+		const disbursements = await getApplicantDisbursements(IDno);
 
 		res.status(200).json({
-			result: applicants,
-			code: 200,
-		});
-	})
-);
-
-router.post(
-	'/',
-	validator.body(ApplicantSchema),
-	promisify(async (req, res) => {
-		const { orgId } = req.params;
-		const createdApplicant = await createApplicant(req.body, orgId);
-
-		res.status(200).json({
-			result: createdApplicant,
+			result: disbursements,
 			code: 200,
 		});
 	})

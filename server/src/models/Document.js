@@ -18,6 +18,7 @@ Document.init(
 
 		description: {
 			type: DataTypes.STRING,
+			allowNull: false,
 		},
 	},
 	{ sequelize, initialAutoIncrement: 1000 }

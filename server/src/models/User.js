@@ -1,7 +1,6 @@
 import { DataTypes, Model, QueryTypes } from '@sequelize/core';
 import sequelize from '../sequelize.js';
-
-// import Document from './Document.js';
+import Document from './Document.js';
 
 class User extends Model {}
 
@@ -52,7 +51,7 @@ User.init(
 		},
 
 		jobTitle: {
-			type: DataTypes.STRING(50),
+			type: DataTypes.STRING,
 		},
 
 		// discriminator field
@@ -65,8 +64,8 @@ User.init(
 	{ sequelize }
 );
 
-// User.hasMany(Document, { foreignKey: 'userId' });
-// Document.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Document, { foreignKey: 'userId' });
+Document.belongsTo(User, { foreignKey: 'userId' });
 
 export async function getNextUserId(transaction) {
 	return (

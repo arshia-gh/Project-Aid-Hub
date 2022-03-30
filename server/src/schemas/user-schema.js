@@ -3,13 +3,15 @@ import { phone } from 'phone';
 
 export default Joi.object({
 	fullname: Joi.string()
-		.pattern(/^[a-zA-Z ]+$/, 'person name')
+		.trim()
+		.pattern(/^[a-zA-Z\s]+$/, 'person name')
 		.min(3)
 		.max(50)
 		.required(),
-	email: Joi.string().email().max(255),
+	email: Joi.string().trim().lowercase().email().max(255),
 	mobileNo: Joi.string()
-		.pattern(/^[0-9()+-\s]+$/)
+		.trim()
+		.pattern(/^[0-9()+]+$/)
 		.custom((value) => {
 			const { isValid, phoneNumber } = phone(value, {
 				country: 'MY',

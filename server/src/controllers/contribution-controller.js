@@ -8,7 +8,7 @@ export async function recordGoods(goods, appealId) {
 		const foundAppeal = await findAppealByPk(appealId, { transaction: t });
 
 		if (foundAppeal.outcome === 'ended') {
-			ApiError.badRequest(
+			throw ApiError.badRequest(
 				'Contribution cannot be recorded for an inactive appeal'
 			);
 		}
@@ -28,7 +28,7 @@ export async function recordCashDonation(cashDonation, appealId) {
 		const foundAppeal = await findAppealByPk(appealId, { transaction: t });
 
 		if (foundAppeal.outcome === 'ended') {
-			ApiError.badRequest(
+			throw ApiError.badRequest(
 				'Contribution cannot be recorded for an inactive appeal'
 			);
 		}

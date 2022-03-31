@@ -17,17 +17,19 @@ export async function recordDisbursements(disbursement, appealId) {
 	return sequelize.transaction(async (t) => {
 		const foundAppeal = await findAppealByPk(appealId, {
 			transaction: t,
-			appealAggregateOption,
+			...appealAggregateOption,
 		});
 
-		if (foundAppeal.outcome === 'ended') {
+		if (foundAppeal.get('outcome') === 'ended') {
 			throw ApiError.badRequest(
 				'Disbursement cannot be recorded for an inactive appeal'
 			);
 		}
 
-		if (foundAppeal.outcome === 'collecting') {
-			foundAppeal.update({ outcome: 'disbursing' }, { transaction: t });
+		if (foundAppeal.get('outcome') === 'collecting') {
+			await (
+				await findAppealByPk(appealId, { transaction: t })
+			).update({ outcome: 'disbursing' }, { transaction: t });
 		}
 
 		if (foundAppeal.fromDate > disbursement.disbursementDate) {
@@ -36,9 +38,13 @@ export async function recordDisbursements(disbursement, appealId) {
 			);
 		}
 
-		const totalCashAmount = foundAppeal.donatedCash ?? 0;
-		const totalGoodsValue = foundAppeal.donatedGoods ?? 0;
-		const totalDisbursedAmount = foundAppeal.disbursedAmount ?? 0;
+		const totalCashAmount = parseFloat(foundAppeal.get('donatedCash') ?? 0);
+		const totalGoodsValue = parseFloat(
+			foundAppeal.get('donatedGoods') ?? 0
+		);
+		const totalDisbursedAmount = parseFloat(
+			foundAppeal.get('disbursedAmount') ?? 0
+		);
 
 		const availableAmount =
 			totalCashAmount + totalGoodsValue - totalDisbursedAmount;
@@ -51,7 +57,7 @@ export async function recordDisbursements(disbursement, appealId) {
 
 		const foundApplicant = await findApplicantByIDno(disbursement.IDno, t);
 
-		if (foundAppeal.orgId !== foundApplicant.orgId) {
+		if (foundAppeal.orgId !== appealId) {
 			throw ApiError.badRequest(
 				"Appeal's organization must be the same as Applicant's organization"
 			);

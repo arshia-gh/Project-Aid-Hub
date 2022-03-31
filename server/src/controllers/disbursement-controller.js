@@ -63,6 +63,7 @@ export async function recordDisbursements(disbursement, appealId) {
 			);
 		}
 
+		console.log(foundApplicant);
 		return foundAppeal.createDisbursement(
 			{
 				...disbursement,

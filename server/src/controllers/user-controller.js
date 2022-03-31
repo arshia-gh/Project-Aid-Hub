@@ -14,7 +14,7 @@ import { sendCredentials } from '../nodemailer.js';
 import Organization from '../models/Organization.js';
 
 const toSafeUser = (user) => {
-	return _.omitBy(_.omit(user.toJSON(), ['id', 'password']), _.isNil);
+	return _.omitBy(_.omit(user.toJSON(), ['password']), _.isNil);
 };
 
 export async function getOrgRepresentatives(orgId) {

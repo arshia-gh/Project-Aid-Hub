@@ -108,7 +108,7 @@ export async function getAppealById(appealId) {
 
 export async function updateAppealOutcome(appealId, newOutcomes) {
 	return sequelize.transaction(async (t) => {
-		const foundAppeal = await findAppealByPk(appealId, t);
+		const foundAppeal = await findAppealByPk(appealId, { transaction: t });
 		return foundAppeal.update({ outcome: newOutcomes }, { transaction: t });
 	});
 }

@@ -1,4 +1,12 @@
-import { Badge, Table } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import {
+	Badge,
+	Table,
+	UncontrolledDropdown,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem,
+} from 'reactstrap';
 
 const getStatusBadge = (status) => {
 	const color =
@@ -20,14 +28,15 @@ export const OrgAppealsTable = ({ appeals }) => {
 					<th>Target Amount</th>
 					<th>Donated Amount</th>
 					<th>Disbursed Amount</th>
+					<th />
 				</tr>
 			</thead>
 			<tbody>
 				{appeals.map((ap) => {
 					const donatedAmount =
-						parseFloat(ap.donatedCash ?? 0) +
-						parseFloat(ap.donatedGoods ?? 0);
-					const disbursedAmount = parseFloat(ap.disbursedAmount ?? 0);
+						parseFloat(ap.donatedCash) +
+						parseFloat(ap.donatedGoods);
+					const disbursedAmount = parseFloat(ap.disbursedAmount);
 					return (
 						<tr key={ap.id}>
 							<td>{getStatusBadge(ap.outcome)}</td>
@@ -38,6 +47,27 @@ export const OrgAppealsTable = ({ appeals }) => {
 								{donatedAmount.toFixed(2)}
 							</td>
 							<td>RM{disbursedAmount.toFixed(2)}</td>
+							<td className='text-right'>
+								<UncontrolledDropdown>
+									<DropdownToggle
+										className='btn-icon-only text-light'
+										role='button'
+										size='sm'
+										color=''
+										onClick={(e) => e.preventDefault()}>
+										<i className='fas fa-ellipsis-v' />
+									</DropdownToggle>
+									<DropdownMenu
+										className='dropdown-menu-arrow'
+										right>
+										<Link to={`appeals/${ap.id}`}>
+											<DropdownItem>
+												Manage Appeal
+											</DropdownItem>
+										</Link>
+									</DropdownMenu>
+								</UncontrolledDropdown>
+							</td>
 						</tr>
 					);
 				})}

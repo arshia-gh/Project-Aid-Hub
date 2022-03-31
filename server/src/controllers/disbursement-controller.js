@@ -57,7 +57,7 @@ export async function recordDisbursements(disbursement, appealId) {
 
 		const foundApplicant = await findApplicantByIDno(disbursement.IDno, t);
 
-		if (foundAppeal.orgId !== appealId) {
+		if (foundAppeal.orgId !== foundAppeal.get('orgId')) {
 			throw ApiError.badRequest(
 				"Appeal's organization must be the same as Applicant's organization"
 			);

@@ -2,6 +2,7 @@ import { Op } from '@sequelize/core';
 import Appeal from '../models/Appeal.js';
 import Contribution from '../models/Contribution.js';
 import Disbursement from '../models/Disbursement.js';
+import Organization from '../models/Organization.js';
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
 import { findOrganizationByPk } from './organization-controller.js';
@@ -40,6 +41,9 @@ export const appealAggregateOption = {
 		{
 			model: Disbursement,
 			attributes: [],
+		},
+		{
+			model: Organization,
 		},
 	],
 	group: ['id'],

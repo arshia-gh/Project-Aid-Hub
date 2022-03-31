@@ -5,8 +5,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import 'assets/plugins/nucleo/css/nucleo.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'assets/scss/argon-dashboard-react.scss';
-import 'react-date-range/dist/styles.css';
-import 'react-date-range/dist/theme/default.css';
 
 import AdminLayout from 'layouts/Admin.js';
 import AuthLayout from 'layouts/Auth.js';
@@ -18,6 +16,7 @@ import { AlertPortalProvider } from 'contexts/AlertPortalProvider';
 import { AlertPortal } from 'components/AlertPortal';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import PublicLayout from 'layouts/Public';
 
 const queryClient = new QueryClient();
 
@@ -62,6 +61,7 @@ ReactDOM.render(
 								element={<RepresentativeLayout />}
 							/>
 						</Route>
+						<Route path='public/*' element={<PublicLayout />} />
 						<Route path='*' element={<AuthLayout />} />
 					</Routes>
 				</BrowserRouter>

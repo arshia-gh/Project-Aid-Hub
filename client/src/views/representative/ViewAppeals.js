@@ -7,25 +7,22 @@ import {
 	Row,
 	Badge,
 	Spinner,
-	Col,
 } from 'reactstrap';
 
 import { Link } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
-import { OrgApplicantsTable } from 'components/DataTable';
-import { useOrgApplicantsQuery } from 'hooks';
-import ReturnButton from 'components/UI/ReturnButton';
+import { OrgAppealsTable } from 'components/DataTable';
+import { useOrgAppealsQuery } from 'hooks';
 
-const ViewApplicants = () => {
+const ViewAppeals = () => {
 	const { auth } = useAuth();
-
 	const { Organization: organization } = auth.user;
 
 	const {
 		isLoading,
 		isSuccess,
-		data: applicants,
-	} = useOrgApplicantsQuery(organization.id);
+		data: appeals,
+	} = useOrgAppealsQuery(organization.id);
 
 	return (
 		<>
@@ -35,20 +32,18 @@ const ViewApplicants = () => {
 						<Card className='shadow'>
 							<CardHeader className='border-0'>
 								<Row className='align-items-center'>
-									<Col className='d-flex align-items-center'>
-										<ReturnButton className='mr-3' />
+									<div className='col'>
 										<h3 className='mb-0'>
-											{organization.name}'s Applicants
+											List of Applicants
 										</h3>
-									</Col>
+									</div>
 									<div className='col text-right'>
 										<Link
 											to={
 												'/representative/new-applicant'
 											}>
 											<Button color='primary' size='sm'>
-												<i class='fas fa-plus'></i>{' '}
-												Register Applicant
+												Add Applicant
 											</Button>
 										</Link>
 									</div>
@@ -61,15 +56,15 @@ const ViewApplicants = () => {
 									</Badge>
 								</div>
 							) : (
-								<OrgApplicantsTable applicants={applicants} />
+								<OrgAppealsTable appeals={appeals} />
 							)}
-							{isSuccess && applicants.length === 0 && (
-								<CardFooter>
+							<CardFooter>
+								{isSuccess && appeals.length === 0 && (
 									<Badge color='info'>
 										No applicant was found
 									</Badge>
-								</CardFooter>
-							)}
+								)}
+							</CardFooter>
 						</Card>
 					</div>
 				</Row>
@@ -78,4 +73,4 @@ const ViewApplicants = () => {
 	);
 };
 
-export default ViewApplicants;
+export default ViewAppeals;

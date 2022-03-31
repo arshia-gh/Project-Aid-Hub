@@ -1,8 +1,20 @@
 import axios from 'axios';
 
-export default axios.create({
+export const instance = axios.create({
 	baseURL: 'http://localhost:8080/api',
 });
+
+export const getOrgApplicants = async (orgId) => {
+	return instance.get(`/organizations/${orgId}/applicants`);
+};
+
+export const getOrgAppeals = async (orgId) => {
+	return instance.get(`/organizations/${orgId}/appeals`);
+};
+
+export const postAppeals = async (appeal, orgId) => {
+	return instance.post(`/organizations/${orgId}/appeals`, appeal);
+};
 
 export const parseError = (error) => {
 	const {
@@ -33,3 +45,5 @@ export const parseFieldErrors = (fields, errorName) => {
 	}
 	return fieldErrors;
 };
+
+export default instance;

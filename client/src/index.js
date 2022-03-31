@@ -5,6 +5,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import 'assets/plugins/nucleo/css/nucleo.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'assets/scss/argon-dashboard-react.scss';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 
 import AdminLayout from 'layouts/Admin.js';
 import AuthLayout from 'layouts/Auth.js';
@@ -14,50 +16,57 @@ import { AuthProvider } from 'contexts/AuthProvider';
 import RequireAuth from 'components/Utils/RequireAuth';
 import { AlertPortalProvider } from 'contexts/AlertPortalProvider';
 import { AlertPortal } from 'components/AlertPortal';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+
+const queryClient = new QueryClient();
 
 ReactDOM.render(
-	<AuthProvider>
-		<AlertPortalProvider>
-			<BrowserRouter>
-				<AlertPortal autoClose />
-				<Routes>
-					<Route
-						element={
-							<RequireAuth
-								allowedRole='ADMIN'
-								onFailureUrl='/login/admin'
-							/>
-						}>
-						<Route path='/admin/*' element={<AdminLayout />} />
-					</Route>
-					<Route
-						element={
-							<RequireAuth
-								allowedRole='APPLICANT'
-								onFailureUrl='/login/user'
-							/>
-						}>
+	<QueryClientProvider client={queryClient}>
+		<ReactQueryDevtools initialIsOpen={false} />
+		<AuthProvider>
+			<AlertPortalProvider>
+				<BrowserRouter>
+					<AlertPortal autoClose />
+					<Routes>
 						<Route
-							path='/applicant/*'
-							element={<ApplicantLayout />}
-						/>
-					</Route>
-					<Route
-						element={
-							<RequireAuth
-								allowedRole='ORG_REPRESENTATIVE'
-								onFailureUrl='/login/user'
-							/>
-						}>
+							element={
+								<RequireAuth
+									allowedRole='ADMIN'
+									onFailureUrl='/login/admin'
+								/>
+							}>
+							<Route path='/admin/*' element={<AdminLayout />} />
+						</Route>
 						<Route
-							path='/representative/*'
-							element={<RepresentativeLayout />}
-						/>
-					</Route>
-					<Route path='*' element={<AuthLayout />} />
-				</Routes>
-			</BrowserRouter>
-		</AlertPortalProvider>
-	</AuthProvider>,
+							element={
+								<RequireAuth
+									allowedRole='APPLICANT'
+									onFailureUrl='/login/user'
+								/>
+							}>
+							<Route
+								path='/applicant/*'
+								element={<ApplicantLayout />}
+							/>
+						</Route>
+						<Route
+							element={
+								<RequireAuth
+									allowedRole='ORG_REPRESENTATIVE'
+									onFailureUrl='/login/user'
+								/>
+							}>
+							<Route
+								path='/representative/*'
+								element={<RepresentativeLayout />}
+							/>
+						</Route>
+						<Route path='*' element={<AuthLayout />} />
+					</Routes>
+				</BrowserRouter>
+			</AlertPortalProvider>
+		</AuthProvider>
+	</QueryClientProvider>,
 	document.getElementById('root')
 );

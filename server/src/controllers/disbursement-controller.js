@@ -2,6 +2,7 @@ import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
 import {
 	findAppealByPk,
+	appealAggregateOption,
 	getTotalDisbursedAmount,
 } from './appeal-controller.js';
 import {
@@ -22,10 +23,13 @@ export async function getApplicantDisbursements(IDno) {
 
 export async function recordDisbursements(disbursement, appealId) {
 	return sequelize.transaction(async (t) => {
-		const foundAppeal = await findAppealByPk(appealId, t);
+		const foundAppeal = await findAppealByPk(appealId, {
+			transaction: t,
+			appealAggregateOption,
+		});
 
 		if (foundAppeal.outcome === 'ended') {
-			ApiError.badRequest(
+			throw ApiError.badRequest(
 				'Disbursement cannot be recorded for an inactive appeal'
 			);
 		}
@@ -34,19 +38,18 @@ export async function recordDisbursements(disbursement, appealId) {
 			foundAppeal.update({ outcome: 'disbursing' }, { transaction: t });
 		}
 
-		if (foundAppeal.fromDate < disbursement.disbursementDate) {
-			ApiError.badRequest(
+		if (foundAppeal.fromDate > disbursement.disbursementDate) {
+			throw ApiError.badRequest(
 				'Disbursement date must be greater than appeal starting date'
 			);
 		}
 
-		const totalCash = (await getTotalDonatedCash(appealId, t)) ?? 0;
-		const totalGoodsValue = (await getTotalGoodsValue(appealId, t)) ?? 0;
-		const totalDisbursedAmount =
-			(await getTotalDisbursedAmount(appealId, t)) ?? 0;
+		const totalCashAmount = foundAppeal.donatedCash ?? 0;
+		const totalGoodsValue = foundAppeal.donatedGoods ?? 0;
+		const totalDisbursedAmount = foundAppeal.disbursedAmount ?? 0;
 
 		const availableAmount =
-			totalCash + totalGoodsValue - totalDisbursedAmount;
+			totalCashAmount + totalGoodsValue - totalDisbursedAmount;
 
 		if (availableAmount < disbursement.amount) {
 			throw ApiError.badRequest(
@@ -55,6 +58,13 @@ export async function recordDisbursements(disbursement, appealId) {
 		}
 
 		const foundApplicant = await findApplicantByIDno(disbursement.IDno, t);
+
+		if (foundAppeal.orgId !== foundApplicant.orgId) {
+			throw ApiError.badRequest(
+				"Appeal's organization must be the same as Applicant's organization"
+			);
+		}
+
 		return foundAppeal.createDisbursement(
 			{
 				...disbursement,

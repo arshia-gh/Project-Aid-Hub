@@ -97,17 +97,19 @@ const ViewOrganization = (props) => {
 									</div>
 								</Row>
 							</CardHeader>
-							<Table
-								data={representatives}
-								headers={{
-									username: 'Username',
-									fullname: 'Full Name',
-									jobTitle: 'Job Title',
-									email: 'Email Address',
-									mobileNo: 'HP Number',
-								}}
-								rowKey='username'
-							/>
+							{representatives.length !== 0 && (
+								<Table
+									data={representatives}
+									headers={{
+										username: 'Username',
+										fullname: 'Full Name',
+										jobTitle: 'Job Title',
+										email: 'Email Address',
+										mobileNo: 'HP Number',
+									}}
+									rowKey='username'
+								/>
+							)}
 							<hr className='m-0' />
 							<CardFooter className='border-0 bg-secondary'>
 								<ReturnButton />

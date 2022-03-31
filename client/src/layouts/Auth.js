@@ -1,7 +1,7 @@
 import React from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Link, Navigate, useRoutes } from 'react-router-dom';
 // reactstrap components
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
 
 // core components
 import AuthNavbar from 'components/Navbars/AuthNavbar.js';
@@ -51,6 +51,9 @@ const AuthLayout = () => {
 										Don’t struggle alone, there’s more than
 										enough kindness for everyone.
 									</p>
+									<Button tag={Link} to='/public/appeals'>
+										View Appeals
+									</Button>
 								</Col>
 							</Row>
 						</div>

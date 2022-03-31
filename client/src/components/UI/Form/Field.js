@@ -24,7 +24,6 @@ const Field = React.forwardRef(({ label, prepend, append, ...props }, ref) => {
 					</InputGroupAddon>
 				)}
 				<Input
-					className='form-control'
 					id={props.id || props.name}
 					ref={ref}
 					{...field}

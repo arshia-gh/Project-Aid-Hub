@@ -1,5 +1,5 @@
 // reactstrap components
-import { Card, Col, Container, Row, CardHeader, CardBody } from 'reactstrap';
+import { Card, Col, Row, CardHeader, CardBody } from 'reactstrap';
 
 import { useRef } from 'react';
 
@@ -21,24 +21,25 @@ const AddApplicant = () => {
 
 	return (
 		<>
-			<ControlledModal ref={modalRef} onClose={() => navigate('..')} />
-			<Container className='mt--7' fluid>
-				<Card className='bg-secondary shadow'>
-					<CardHeader className='bg-white border-0'>
-						<Row className='align-items-center'>
-							<Col xs='8'>
-								<h3 className='mb-0'>Add New Applicant</h3>
-							</Col>
-						</Row>
-					</CardHeader>
-					<CardBody>
-						<ApplicantForm
-							organization={auth.user.Organization}
-							onSuccess={onSuccessRegister}
-						/>
-					</CardBody>
-				</Card>
-			</Container>
+			<ControlledModal
+				ref={modalRef}
+				onClose={() => navigate('../applicants')}
+			/>
+			<Card className='bg-secondary shadow'>
+				<CardHeader className='bg-white border-0'>
+					<Row className='align-items-center'>
+						<Col xs='8'>
+							<h3 className='mb-0'>Add New Applicant</h3>
+						</Col>
+					</Row>
+				</CardHeader>
+				<CardBody>
+					<ApplicantForm
+						organization={auth.user.Organization}
+						onSuccess={onSuccessRegister}
+					/>
+				</CardBody>
+			</Card>
 		</>
 	);
 };

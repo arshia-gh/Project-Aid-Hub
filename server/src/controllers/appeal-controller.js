@@ -13,6 +13,8 @@ export const appealAggregateOption = {
 		'description',
 		'targetAmount',
 		'outcome',
+		'toDate',
+		'fromDate',
 		[
 			sequelize.fn('SUM', sequelize.col('CashDonations.amount')),
 			'donatedCash',

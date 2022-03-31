@@ -96,16 +96,6 @@ export async function findAppealByPk(appealId, options) {
 	return foundAppeal;
 }
 
-export async function getTotalDisbursedAmount(appealId, transaction) {
-	return Disbursement.sum('amount', {
-		where: {
-			appealId,
-		},
-		raw: true,
-		transaction,
-	});
-}
-
 export async function getAppealById(appealId) {
 	return findAppealByPk(appealId, appealAggregateOption);
 }

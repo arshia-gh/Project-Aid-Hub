@@ -1,14 +1,6 @@
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
-import {
-	findAppealByPk,
-	appealAggregateOption,
-	getTotalDisbursedAmount,
-} from './appeal-controller.js';
-import {
-	getTotalDonatedCash,
-	getTotalGoodsValue,
-} from './contribution-controller.js';
+import { findAppealByPk, appealAggregateOption } from './appeal-controller.js';
 import { findApplicantByIDno } from './user-controller.js';
 
 export async function getAppealDisbursements(appealId) {

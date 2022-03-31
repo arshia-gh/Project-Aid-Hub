@@ -4,6 +4,18 @@ export const instance = axios.create({
 	baseURL: 'http://localhost:8080/api',
 });
 
+export const getOrganizations = async () => {
+	return instance.get(`organizations/`);
+};
+
+export const getOrganization = async (orgId) => {
+	return instance.get(`organizations/${orgId}`);
+};
+
+export const getRepresentatives = async (orgId) => {
+	return instance.get(`organizations/${orgId}/representatives`);
+};
+
 export const getOrgApplicants = async (orgId) => {
 	return instance.get(`/organizations/${orgId}/applicants`);
 };
@@ -12,8 +24,20 @@ export const getOrgAppeals = async (orgId) => {
 	return instance.get(`/organizations/${orgId}/appeals`);
 };
 
+export const getAppeals = async () => {
+	return instance.get(`/appeals`);
+};
+
 export const postAppeals = async (appeal, orgId) => {
 	return instance.post(`/organizations/${orgId}/appeals`, appeal);
+};
+
+export const getAppealById = async (appealId) => {
+	return instance.get(`/appeals/${appealId}`);
+};
+
+export const getContributions = async (appealId) => {
+	return instance.get(`/appeals/${appealId}/contributions`);
 };
 
 export const parseError = (error) => {

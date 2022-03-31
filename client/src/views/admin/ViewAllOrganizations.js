@@ -13,7 +13,7 @@ import {
 	Badge,
 } from 'reactstrap';
 
-import AdminHeader from 'components/Headers/AdminHeader';
+import DashboardHeader from 'components/Headers/DashboardHeader';
 import { Link } from 'react-router-dom';
 import Table from 'components/UI/Table';
 import { useAlerts } from 'hooks';
@@ -55,7 +55,7 @@ const ViewAllOrganizations = () => {
 
 	return (
 		<>
-			<AdminHeader />
+			<DashboardHeader />
 			<Container className='mt--7' fluid>
 				<Row>
 					<div className='col'>

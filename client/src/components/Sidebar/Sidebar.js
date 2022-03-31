@@ -34,7 +34,7 @@ const Sidebar = (props) => {
 		setCollapseOpen(false);
 	};
 
-	const { setAuth } = useAuth();
+	const { auth, setAuth } = useAuth();
 	const navigate = useNavigate();
 
 	// creates the links that appear in the left menu / Sidebar
@@ -86,39 +86,43 @@ const Sidebar = (props) => {
 					/>
 				</NavbarBrand>
 				{/* User */}
-				<Nav className='align-items-center d-md-none'>
-					<UncontrolledDropdown nav>
-						<DropdownToggle nav>
-							<Media className='align-items-center'>
-								<span className='avatar avatar-sm rounded-circle'>
-									<img
-										alt='...'
-										src={
-											require('../../assets/img/theme/sample-avatar.png')
-												.default
-										}
-									/>
-								</span>
-							</Media>
-						</DropdownToggle>
-						<DropdownMenu className='dropdown-menu-arrow' right>
-							<DropdownItem
-								className='noti-title'
-								header
-								tag='div'>
-								<h6 className='text-overflow m-0'>Welcome!</h6>
-							</DropdownItem>
-							<DropdownItem
-								onClick={() => {
-									navigate('/login/user');
-									setAuth(null);
-								}}>
-								<i className='ni ni-user-run' />
-								<span>Logout</span>
-							</DropdownItem>
-						</DropdownMenu>
-					</UncontrolledDropdown>
-				</Nav>
+				{auth != null && (
+					<Nav className='align-items-center d-md-none'>
+						<UncontrolledDropdown nav>
+							<DropdownToggle nav>
+								<Media className='align-items-center'>
+									<span className='avatar avatar-sm rounded-circle'>
+										<img
+											alt='...'
+											src={
+												require('../../assets/img/theme/sample-avatar.png')
+													.default
+											}
+										/>
+									</span>
+								</Media>
+							</DropdownToggle>
+							<DropdownMenu className='dropdown-menu-arrow' right>
+								<DropdownItem
+									className='noti-title'
+									header
+									tag='div'>
+									<h6 className='text-overflow m-0'>
+										Welcome!
+									</h6>
+								</DropdownItem>
+								<DropdownItem
+									onClick={() => {
+										navigate('/login/user');
+										setAuth(null);
+									}}>
+									<i className='ni ni-user-run' />
+									<span>Logout</span>
+								</DropdownItem>
+							</DropdownMenu>
+						</UncontrolledDropdown>
+					</Nav>
+				)}
 				{/* Collapse */}
 				<Collapse navbar isOpen={collapseOpen}>
 					{/* Collapse header */}

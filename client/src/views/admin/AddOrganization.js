@@ -1,5 +1,5 @@
 import OrganizationForm from 'components/Forms/OrganizationForm';
-import AdminHeader from 'components/Headers/AdminHeader';
+import DashboardHeader from 'components/Headers/DashboardHeader';
 import { useAlerts } from 'hooks';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardBody, Col, Container, Row } from 'reactstrap';
@@ -18,7 +18,7 @@ const AddOrganization = () => {
 	};
 	return (
 		<>
-			<AdminHeader />
+			<DashboardHeader />
 			<Container className='mt--7' fluid>
 				<Card className='bg-secondary shadow'>
 					<CardHeader className='bg-white border-0'>

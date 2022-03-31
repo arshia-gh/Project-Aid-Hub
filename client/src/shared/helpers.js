@@ -10,3 +10,10 @@ export const uuid = () => {
 		}
 	);
 };
+
+export const truncText = (text, limit) => {
+	if (text.length > limit) {
+		return text.slice(0, limit) + '...';
+	}
+	return text;
+};

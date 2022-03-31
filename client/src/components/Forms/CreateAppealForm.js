@@ -8,19 +8,25 @@ import FieldDate from 'components/UI/Form/FieldDate';
 import { postAppeals } from 'api/axios';
 import useAuth from 'hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { useAlerts } from 'hooks';
 
 export const CreateAppealForm = () => {
 	const current = moment().startOf('day');
 	const { auth } = useAuth();
 	const navigate = useNavigate();
+	const { addAlert } = useAlerts();
 
 	const submitHandler = async (values) => {
 		const castValues = schema.cast(values);
-		console.log(castValues);
 		const response = await postAppeals(
 			castValues,
 			auth.user.Organization.id
 		);
+		addAlert({
+			title: 'Success',
+			message: 'Appeal was successfully created',
+			mode: 'success',
+		});
 		navigate('../');
 	};
 

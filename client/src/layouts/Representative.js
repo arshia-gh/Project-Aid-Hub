@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 // reactstrap components
-import { Container } from 'reactstrap';
+import { Col, Container, Row } from 'reactstrap';
 
 // core components
 import DashboardNavbar from 'components/Navbars/DashboardNavbar.js';
@@ -18,14 +18,28 @@ import ViewApplicants from 'views/representative/ViewApplicants';
 import AddAppeal from 'views/representative/AddAppeal';
 import OrganizationHeader from 'components/Headers/OrganizationHeader';
 import useAuth from 'hooks/useAuth';
-import ViewAppeals from 'views/representative/ViewAppeals';
+import ViewOrgAppeals from 'views/representative/ViewOrgAppeals';
+import ViewOrgAppeal from 'views/representative/ViewOrgAppeal';
+import ViewContributions from 'views/representative/ViewContributions';
 
 const routes = [
 	{
 		index: true,
 		name: 'Dashboard',
 		icon: 'fas fa-book-open text-primary',
-		element: <ViewAppeals />,
+		element: <ViewOrgAppeals />,
+	},
+	{
+		path: 'appeals/:appealId',
+		name: 'View Appeal Details',
+		invisible: true,
+		element: <ViewOrgAppeal />,
+	},
+	{
+		path: 'appeals/:appealId/contributions',
+		name: 'View Contributions',
+		invisible: true,
+		element: <ViewContributions />,
 	},
 	{
 		path: 'applicants',
@@ -60,7 +74,15 @@ const RepresentativeLayout = () => {
 			<div className='main-content'>
 				<DashboardNavbar brandText={match?.route.name || 'Dashboard'} />
 				<OrganizationHeader organization={auth.user.Organization} />
-				{routeResults || <Navigate to='profile' replace />}
+				<Container className='mt--7' fluid>
+					<Row>
+						<Col>
+							{routeResults || (
+								<Navigate to='/representative' replace />
+							)}
+						</Col>
+					</Row>
+				</Container>
 				<Container fluid>
 					<DashboardFooter />
 				</Container>

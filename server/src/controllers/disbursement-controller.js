@@ -1,3 +1,4 @@
+import Disbursement from '../models/Disbursement.js';
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
 import { findAppealByPk, appealAggregateOption } from './appeal-controller.js';
@@ -32,7 +33,10 @@ export async function recordDisbursements(disbursement, appealId) {
 			).update({ outcome: 'disbursing' }, { transaction: t });
 		}
 
-		if (foundAppeal.fromDate > disbursement.disbursementDate) {
+		if (
+			new Date(foundAppeal.fromDate) >
+			new Date(disbursement.disbursementDate)
+		) {
 			throw ApiError.badRequest(
 				'Disbursement date must be greater than appeal starting date'
 			);
@@ -57,13 +61,28 @@ export async function recordDisbursements(disbursement, appealId) {
 
 		const foundApplicant = await findApplicantByIDno(disbursement.IDno, t);
 
-		if (foundAppeal.orgId !== foundAppeal.get('orgId')) {
+		if (
+			foundAppeal.get('Organization').id !==
+			foundAppeal.get('Organization').id
+		) {
 			throw ApiError.badRequest(
 				"Appeal's organization must be the same as Applicant's organization"
 			);
 		}
 
-		console.log(foundApplicant);
+		if (
+			await Disbursement.findOne({
+				where: {
+					appealId,
+					userId: foundApplicant.id,
+				},
+			})
+		) {
+			throw ApiError.badRequest(
+				'Each applicant can only be assigned one disbursement per appeal'
+			);
+		}
+
 		return foundAppeal.createDisbursement(
 			{
 				...disbursement,

@@ -1,7 +1,5 @@
 import { Op } from '@sequelize/core';
 import Appeal from '../models/Appeal.js';
-import Contribution from '../models/Contribution.js';
-import Disbursement from '../models/Disbursement.js';
 import Organization from '../models/Organization.js';
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
@@ -17,36 +15,33 @@ export const appealAggregateOption = {
 		'toDate',
 		'fromDate',
 		[
-			sequelize.fn('SUM', sequelize.col('CashDonations.amount')),
+			sequelize.literal(`(
+				SELECT COALESCE(SUM(amount), 0) 
+				FROM Disbursements 
+				WHERE appealId = Appeal.id
+			)`),
+			'disbursedAmount',
+		],
+		[
+			sequelize.literal(`(
+					SELECT 
+						COALESCE(SUM(amount), 0)
+					FROM Contributions 
+					WHERE appealId = Appeal.id
+				)`),
 			'donatedCash',
 		],
 		[
-			sequelize.fn('SUM', sequelize.col('Disbursements.amount')),
-			'disbursedAmount',
+			sequelize.literal(`(
+					SELECT 
+						COALESCE(SUM(estimatedValue), 0)
+					FROM Contributions 
+					WHERE appealId = Appeal.id
+				)`),
+			'donatedGoods',
 		],
-		[sequelize.fn('SUM', sequelize.col('Goods.amount')), 'estimatedValue'],
 	],
-	include: [
-		{
-			model: Contribution,
-			attributes: [],
-			as: 'cashDonations',
-		},
-		{
-			model: Contribution,
-			attributes: [],
-
-			as: 'goods',
-		},
-		{
-			model: Disbursement,
-			attributes: [],
-		},
-		{
-			model: Organization,
-		},
-	],
-	group: ['id'],
+	include: [Organization],
 };
 
 export async function organizeAppeal(appeal, orgId) {

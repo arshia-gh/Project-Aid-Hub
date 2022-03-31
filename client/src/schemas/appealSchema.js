@@ -19,6 +19,7 @@ export default object({
 		.required('Required')
 		.label('Description'),
 	targetAmount: number()
+		.typeError('Target amount must be a valid number')
 		.positive()
 		.required('Required')
 		.label('Target amount'),

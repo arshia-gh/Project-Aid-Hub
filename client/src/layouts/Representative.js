@@ -21,6 +21,12 @@ import useAuth from 'hooks/useAuth';
 import ViewOrgAppeals from 'views/representative/ViewOrgAppeals';
 import ViewOrgAppeal from 'views/representative/ViewOrgAppeal';
 import ViewContributions from 'views/representative/ViewContributions';
+import AddContribution from 'views/representative/AddContribution';
+import ViewApplicantProfile from 'views/representative/ViewApplicantProfile';
+import ViewAppealDisbursements from 'views/representative/ViewAppealDisbursements';
+import AddDisbursement from 'views/representative/AddDisbursement';
+import ViewAvailableApplicants from 'views/representative/ViewAvailableApplicants';
+import AddDocument from 'views/representative/AddDocument';
 
 const routes = [
 	{
@@ -40,6 +46,42 @@ const routes = [
 		name: 'View Contributions',
 		invisible: true,
 		element: <ViewContributions />,
+	},
+	{
+		path: 'appeals/:appealId/contributions/new',
+		name: 'Record Contribution',
+		invisible: true,
+		element: <AddContribution />,
+	},
+	{
+		path: 'appeals/:appealId/disbursements',
+		name: 'View Disbursements',
+		invisible: true,
+		element: <ViewAppealDisbursements />,
+	},
+	{
+		path: 'appeals/:appealId/available',
+		name: 'View Available Applicants',
+		invisible: true,
+		element: <ViewAvailableApplicants />,
+	},
+	{
+		path: 'appeals/:appealId/disbursements/new',
+		name: 'Record Disbursement',
+		invisible: true,
+		element: <AddDisbursement />,
+	},
+	{
+		path: 'applicants/:IDno',
+		name: 'View Applicant Profile',
+		invisible: true,
+		element: <ViewApplicantProfile />,
+	},
+	{
+		path: 'applicants/:IDno/new-document',
+		name: 'Add New Document',
+		invisible: true,
+		element: <AddDocument />,
 	},
 	{
 		path: 'applicants',

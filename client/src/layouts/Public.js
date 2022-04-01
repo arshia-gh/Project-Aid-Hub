@@ -16,6 +16,7 @@ import Sidebar from 'components/Sidebar/Sidebar.js';
 import ViewAppeals from 'views/public/ViewAppeals';
 import DashboardHeader from 'components/Headers/DashboardHeader';
 import ViewAppeal from 'views/public/ViewAppeal';
+import AddCashDonation from 'views/public/AddCashDonation';
 
 const routes = [
 	{
@@ -29,6 +30,12 @@ const routes = [
 		name: 'View Appeal Details',
 		invisible: true,
 		element: <ViewAppeal />,
+	},
+	{
+		path: 'appeals/:appealId/contribute',
+		name: 'Record Cash Donation',
+		invisible: true,
+		element: <AddCashDonation />,
 	},
 ];
 

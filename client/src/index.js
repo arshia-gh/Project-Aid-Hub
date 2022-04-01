@@ -15,14 +15,13 @@ import RequireAuth from 'components/Utils/RequireAuth';
 import { AlertPortalProvider } from 'contexts/AlertPortalProvider';
 import { AlertPortal } from 'components/AlertPortal';
 import { QueryClientProvider, QueryClient } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+
 import PublicLayout from 'layouts/Public';
 
 const queryClient = new QueryClient();
 
 ReactDOM.render(
 	<QueryClientProvider client={queryClient}>
-		<ReactQueryDevtools initialIsOpen={false} />
 		<AuthProvider>
 			<AlertPortalProvider>
 				<BrowserRouter>

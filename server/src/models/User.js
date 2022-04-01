@@ -65,7 +65,7 @@ User.init(
 );
 
 User.hasMany(Document, { foreignKey: 'userId' });
-Document.belongsTo(User, { foreignKey: 'userId' });
+Document.belongsTo(User);
 
 export async function getNextUserId(transaction) {
 	return (

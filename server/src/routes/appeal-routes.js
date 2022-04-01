@@ -1,8 +1,8 @@
 import express from 'express';
-import Joi from 'joi';
 import {
 	getAppealById,
 	getAppeals,
+	getAvailableApplicants,
 	updateAppealOutcome,
 } from '../controllers/appeal-controller.js';
 import {
@@ -44,6 +44,19 @@ router.get(
 
 		res.status(200).json({
 			result: foundAppeal,
+			code: 200,
+		});
+	})
+);
+
+router.get(
+	'/:appealId/available',
+	promisify(async (req, res) => {
+		const { appealId } = req.params;
+		const foundApplicants = await getAvailableApplicants(appealId);
+
+		res.status(200).json({
+			result: foundApplicants,
 			code: 200,
 		});
 	})

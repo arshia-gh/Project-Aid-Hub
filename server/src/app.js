@@ -8,6 +8,7 @@ import orgRoutes from './routes/organization-routes.js';
 import appealRoutes from './routes/appeal-routes.js';
 import applicantRoutes from './routes/applicant-routes.js';
 import apiRoutes from './routes/api-routes.js';
+import fileUpload from 'express-fileupload';
 
 import {
 	validationErrorHandler,
@@ -34,7 +35,10 @@ app.use(
 		origin: '*',
 	})
 );
+
+app.use(`/${api_prefix}`, express.static('public'));
 app.use(`/${api_prefix}`, express.json());
+app.use(`/${api_prefix}`, fileUpload());
 app.use(`/${api_prefix}`, express.urlencoded({ extended: true }));
 
 app.use(`/${api_prefix}`, apiRoutes);

@@ -18,10 +18,7 @@ export const CreateAppealForm = () => {
 
 	const submitHandler = async (values) => {
 		const castValues = schema.cast(values);
-		const response = await postAppeals(
-			castValues,
-			auth.user.Organization.id
-		);
+		await postAppeals(castValues, auth.user.Organization.id);
 		addAlert({
 			title: 'Success',
 			message: 'Appeal was successfully created',
@@ -48,7 +45,11 @@ export const CreateAppealForm = () => {
 						<Field label='Title' name='title' />
 					</FormGroup>
 					<FormGroup>
-						<Field label='Target amount' name='targetAmount' />
+						<Field
+							prepend='RM'
+							label='Target amount'
+							name='targetAmount'
+						/>
 					</FormGroup>
 					<FormGroup>
 						<Field

@@ -1,6 +1,8 @@
 import { Op } from '@sequelize/core';
 import Appeal from '../models/Appeal.js';
+import Disbursement from '../models/Disbursement.js';
 import Organization from '../models/Organization.js';
+import User from '../models/User.js';
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
 import { findOrganizationByPk } from './organization-controller.js';
@@ -93,6 +95,27 @@ export async function findAppealByPk(appealId, options) {
 
 export async function getAppealById(appealId) {
 	return findAppealByPk(appealId, appealAggregateOption);
+}
+
+export async function getAvailableApplicants(appealId) {
+	const foundAppeal = await findAppealByPk(appealId);
+	return User.findAll({
+		where: [
+			sequelize.where(sequelize.col('orgId'), foundAppeal.orgId),
+			sequelize.where(sequelize.col('userType'), 'APPLICANT'),
+			sequelize.where(sequelize.col('Disbursements.userId', null)),
+		],
+		include: [
+			{
+				model: Disbursement,
+				where: {
+					appealId,
+				},
+				required: false,
+				attributes: [],
+			},
+		],
+	});
 }
 
 export async function updateAppealOutcome(appealId, newOutcomes) {

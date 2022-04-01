@@ -58,14 +58,16 @@ const DashboardNavbar = (props) => {
 											Welcome!
 										</h6>
 									</DropdownItem>
-									<DropdownItem
-										onClick={() => {
-											navigate('/login/user');
-											setAuth(null);
-										}}>
-										<i className='ni ni-user-run' />
-										<span>Logout</span>
-									</DropdownItem>
+									{auth != null && (
+										<DropdownItem
+											onClick={() => {
+												navigate('/login/user');
+												setAuth(null);
+											}}>
+											<i className='ni ni-user-run' />
+											<span>Logout</span>
+										</DropdownItem>
+									)}
 								</DropdownMenu>
 							</UncontrolledDropdown>
 						)}

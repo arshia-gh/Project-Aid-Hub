@@ -7,7 +7,7 @@ import {
 	DropdownItem,
 } from 'reactstrap';
 
-export const OrgApplicantsTable = ({ applicants }) => {
+export const AvailableApplicantTable = ({ applicants }) => {
 	return (
 		<Table className='align-items-center table-flush' responsive>
 			<thead className='thead-light'>
@@ -39,10 +39,16 @@ export const OrgApplicantsTable = ({ applicants }) => {
 								<DropdownMenu
 									className='dropdown-menu-arrow'
 									right>
-									<Link to={ap.IDno.toString()}>
+									<Link
+										to={`/representative/applicants/${ap.IDno}`}>
 										<DropdownItem>
-											Manage Applicant
+											View Profile
 										</DropdownItem>
+									</Link>
+									<Link
+										to='./../disbursements/new'
+										state={ap}>
+										<DropdownItem>Select</DropdownItem>
 									</Link>
 								</DropdownMenu>
 							</UncontrolledDropdown>

@@ -20,6 +20,12 @@ import AddCashDonation from 'views/public/AddCashDonation';
 
 const routes = [
 	{
+		path: '/',
+		name: 'Home',
+		icon: 'fas fa-home text-primary',
+		element: <Navigate to='/' />,
+	},
+	{
 		path: 'appeals',
 		name: 'View Appeals',
 		icon: 'fas fa-book-open text-primary',

@@ -1,4 +1,5 @@
 import Disbursement from '../models/Disbursement.js';
+import User from '../models/User.js';
 import sequelize from '../sequelize.js';
 import ApiError from '../utils/errors.js';
 import { findAppealByPk, appealAggregateOption } from './appeal-controller.js';
@@ -6,7 +7,9 @@ import { findApplicantByIDno } from './user-controller.js';
 
 export async function getAppealDisbursements(appealId) {
 	const foundAppeal = await findAppealByPk(appealId);
-	return foundAppeal.getDisbursements();
+	return foundAppeal.getDisbursements({
+		include: [{ model: User }],
+	});
 }
 
 export async function getApplicantDisbursements(IDno) {

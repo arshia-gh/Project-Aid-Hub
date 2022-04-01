@@ -1,9 +1,10 @@
 import ReturnButton from 'components/UI/ReturnButton';
 import { useAppealQuery } from 'hooks';
 import moment from 'moment';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
 	Badge,
+	Button,
 	Card,
 	CardBody,
 	CardFooter,
@@ -27,7 +28,12 @@ const getStatusColor = (status) => {
 const ViewAppeal = () => {
 	const navigate = useNavigate();
 	const { appealId } = useParams();
-	const { isLoading, isError, data: appeal } = useAppealQuery(appealId);
+	const {
+		isLoading,
+		isSuccess,
+		isError,
+		data: appeal,
+	} = useAppealQuery(appealId);
 
 	if (isError) {
 		// TODO: 404 Page
@@ -140,8 +146,17 @@ const ViewAppeal = () => {
 					</>
 				)}
 			</CardBody>
-			<CardFooter>
-				<ReturnButton />
+			<CardFooter className='d-flex'>
+				<ReturnButton className='mr-auto' />
+				{isSuccess && appeal.outcome !== 'ended' && (
+					<Button
+						tag={Link}
+						to='contribute'
+						color='default'
+						size='sm'>
+						<i className='fas fa-plus'></i> Record Contribution
+					</Button>
+				)}
 			</CardFooter>
 		</Card>
 	);

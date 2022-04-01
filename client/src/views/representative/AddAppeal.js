@@ -1,12 +1,5 @@
 const { CreateAppealForm } = require('components/Forms/CreateAppealForm');
-const {
-	Card,
-	CardHeader,
-	Row,
-	Col,
-	CardBody,
-	Container,
-} = require('reactstrap');
+const { Card, CardHeader, Row, Col, CardBody } = require('reactstrap');
 
 const AddAppeal = () => {
 	return (

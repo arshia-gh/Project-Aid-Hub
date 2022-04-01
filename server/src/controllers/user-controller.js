@@ -105,7 +105,7 @@ export async function findApplicantByIDno(IDno, transaction) {
 		);
 	}
 
-	return toSafeUser(foundApplicant);
+	return foundApplicant;
 }
 
 export async function login(username, password) {

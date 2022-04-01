@@ -36,7 +36,7 @@ const ViewOrgAppeals = () => {
 							to='new-appeal'
 							color='primary'
 							size='sm'>
-							<i class='fas fa-plus'></i> Create Appeals
+							<i className='fas fa-plus'></i> Create Appeals
 						</Button>
 					</div>
 				</Row>

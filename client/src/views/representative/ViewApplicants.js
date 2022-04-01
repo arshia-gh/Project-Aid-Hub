@@ -39,7 +39,8 @@ const ViewApplicants = () => {
 					<div className='col text-right'>
 						<Link to={'/representative/new-applicant'}>
 							<Button color='primary' size='sm'>
-								<i class='fas fa-plus'></i> Register Applicant
+								<i className='fas fa-plus'></i> Register
+								Applicant
 							</Button>
 						</Link>
 					</div>

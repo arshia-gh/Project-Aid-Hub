@@ -28,12 +28,7 @@ const getStatusColor = (status) => {
 const ViewOrgAppeal = () => {
 	const navigate = useNavigate();
 	const { appealId } = useParams();
-	const {
-		isLoading,
-		isSuccess,
-		isError,
-		data: appeal,
-	} = useAppealQuery(appealId);
+	const { isLoading, isError, data: appeal } = useAppealQuery(appealId);
 
 	if (isError) {
 		// TODO: 404 Page
@@ -206,15 +201,13 @@ const ViewOrgAppeal = () => {
 				</CardBody>
 				<CardFooter className='d-flex'>
 					<ReturnButton className='mr-auto' />
-					{isSuccess && appeal.outcome !== 'ended' && (
-						<Button
-							tag={Link}
-							to='contributions/new'
-							color='default'
-							size='sm'>
-							<i class='fas fa-plus'></i> Record Contribution
-						</Button>
-					)}
+					<Button
+						tag={Link}
+						to='disbursements'
+						size='sm'
+						color='default'>
+						View Disbursements
+					</Button>
 					<Button
 						tag={Link}
 						to='contributions'

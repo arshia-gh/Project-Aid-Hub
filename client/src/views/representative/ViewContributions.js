@@ -97,8 +97,8 @@ const ViewContributions = () => {
 			<CardFooter className='d-flex'>
 				<ReturnButton className='mr-auto' />
 				{isAppealSuccess && appeal.outcome !== 'ended' && (
-					<Button tag={Link} to='new' color='primary' size='sm'>
-						<i class='fas fa-plus'></i> Record Contribution
+					<Button tag={Link} to='new' color='default' size='sm'>
+						<i className='fas fa-plus'></i> Record Contribution
 					</Button>
 				)}
 			</CardFooter>

@@ -32,12 +32,55 @@ export const postAppeals = async (appeal, orgId) => {
 	return instance.post(`/organizations/${orgId}/appeals`, appeal);
 };
 
+export const postCashDonation = async (cashDonation, appealId) => {
+	return instance.post(`/appeals/${appealId}/cash-donations`, cashDonation);
+};
+
+export const postGoods = async (goods, appealId) => {
+	return instance.post(`/appeals/${appealId}/goods`, goods);
+};
+
+export const postDisbursements = async (disbursement, appealId, IDno) => {
+	return instance.post(`/appeals/${appealId}/disbursements`, {
+		...disbursement,
+		IDno,
+	});
+};
+
+export const getApplicantDocuments = async (IDno) => {
+	return instance.get(`/applicants/${IDno}/documents`);
+};
+
+export const postDocument = async (document, IDno) => {
+	return instance.post(`/applicants/${IDno}/documents`, document, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+		},
+	});
+};
+
 export const getAppealById = async (appealId) => {
 	return instance.get(`/appeals/${appealId}`);
 };
 
 export const getContributions = async (appealId) => {
 	return instance.get(`/appeals/${appealId}/contributions`);
+};
+
+export const getApplicant = async (IDno) => {
+	return instance.get(`/applicants/${IDno}`);
+};
+
+export const getAvailableApplicants = async (appealId) => {
+	return instance.get(`/appeals/${appealId}/available`);
+};
+
+export const getAppealDisbursements = async (appealId) => {
+	return instance.get(`/appeals/${appealId}/disbursements`);
+};
+
+export const getApplicantDisbursements = async (IDno) => {
+	return instance.get(`/applicants/${IDno}/disbursements`);
 };
 
 export const parseError = (error) => {

@@ -27,6 +27,8 @@ const FieldDate = ({ label, ...props }) => {
 				<Datetime
 					{...props}
 					{...field}
+					dateFormat='YYYY-MM-DD'
+					inputProps={{ name: props.name }}
 					onChange={(val) => {
 						helper.setValue(formatDate(val._d));
 					}}

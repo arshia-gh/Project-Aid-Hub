@@ -45,11 +45,7 @@ export const CreateAppealForm = () => {
 						<Field label='Title' name='title' />
 					</FormGroup>
 					<FormGroup>
-						<Field
-							prepend='RM'
-							label='Target amount'
-							name='targetAmount'
-						/>
+						<Field label='Target amount' name='targetAmount' />
 					</FormGroup>
 					<FormGroup>
 						<Field

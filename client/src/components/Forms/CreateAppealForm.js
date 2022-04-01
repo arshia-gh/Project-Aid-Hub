@@ -61,6 +61,7 @@ export const CreateAppealForm = () => {
 						<Col lg={6}>
 							<FormGroup>
 								<FieldDate
+									label='Starting date'
 									name='fromDate'
 									inputProps={{
 										placeholder: 'Select',
@@ -108,6 +109,7 @@ export const CreateAppealForm = () => {
 						<Col lg={6}>
 							<FormGroup>
 								<FieldDate
+									label='Ending date'
 									name='toDate'
 									inputProps={{
 										placeholder: 'Select',

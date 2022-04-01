@@ -13,11 +13,11 @@ const formatDate = (momentDate) => {
 	return moment(momentDate).format('YYYY-MM-DD');
 };
 
-const FieldDate = (props) => {
+const FieldDate = ({ label, ...props }) => {
 	const [field, meta, helper] = useField(props);
 	return (
 		<>
-			<Label>Ending date</Label>
+			{label && <Label>{label}</Label>}
 			<InputGroup>
 				<InputGroupAddon addonType='prepend'>
 					<InputGroupText>

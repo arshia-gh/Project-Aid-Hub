@@ -23,7 +23,6 @@ import { getLoggerInstance } from './utils/logger.js';
 const logger = getLoggerInstance(import.meta.url);
 
 const app = express();
-const sv_host = process.env.SV_HOST || 'localhost';
 const sv_port = process.env.SV_PORT || 8080;
 const api_prefix = process.env.API_PREFIX || 'api';
 
@@ -50,6 +49,6 @@ app.use(validationErrorHandler);
 app.use(databaseErrorHandler);
 app.use(apiErrorHandler);
 
-app.listen(sv_port, sv_host, () => {
-	logger.info(`server is listening on http://${sv_host}:${sv_port}`);
+app.listen(sv_port, () => {
+	logger.info(`server is listening on port ${sv_port}`);
 });

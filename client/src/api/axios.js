@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const apiUrl = process.env.API_URL || 'http://localhost:8080/api';
+const apiUrl = process.env.API_URL || 'https://aid-hub.herokuapp.com/api';
 
 export const instance = axios.create({
 	baseURL: apiUrl,

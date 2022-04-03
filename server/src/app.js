@@ -23,7 +23,7 @@ import { getLoggerInstance } from './utils/logger.js';
 const logger = getLoggerInstance(import.meta.url);
 
 const app = express();
-const sv_port = process.env.SV_PORT || 8080;
+const sv_port = process.env.PORT || 8080;
 const api_prefix = process.env.API_PREFIX || 'api';
 
 app.set('json replacer', (k, v) => (v === null ? undefined : v));

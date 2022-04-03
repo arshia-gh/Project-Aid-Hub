@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const apiUrl = process.env.API_URL || 'http://localhost:8080/api';
+
 export const instance = axios.create({
-	baseURL: 'http://localhost:8080/api',
+	baseURL: apiUrl,
 });
 
 export const getOrganizations = async () => {
